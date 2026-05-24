@@ -43,16 +43,17 @@ public class MapArrange : MonoBehaviour
     {
         tilemap.ClearAllTiles();
 
-        int width = map_data.GetLength(0);
-        int height = map_data.GetLength(1);
+        int xSize = map_data.GetLength(0);
+        int ySize = map_data.GetLength(1);
 
-        for (int i = 0; i < width; i++)
+        for (int x = 0; x < xSize; x++)
         {
-            for (int j = 0; j < height; j++)
+            for (int y = 0; y < ySize; y++)
             {
-                SlotData slot = map_data[i, j];
+                SlotData slot = map_data[x, y];
                 Tile tile = SlotToTile(slot);
-                tilemap.SetTile(new Vector3Int(i, j, 0), tile);
+
+                tilemap.SetTile(new Vector3Int(x, y, 0), tile);
             }
         }
     }

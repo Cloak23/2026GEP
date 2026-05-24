@@ -26,8 +26,11 @@ public class DataManager : MonoBehaviour
             if (player_pos != value)
             {
                 Debug.Log("(" + player_pos.x + " " + player_pos.y + ") (" + value.x + " " + value.y + ")");
-                pos_change?.Invoke(player_pos, value);
+                
+                Vector2Int old_pos = player_pos;
                 player_pos = value;
+
+                pos_change?.Invoke(old_pos, value);
             }
         }
     }
@@ -90,7 +93,7 @@ public class DataManager : MonoBehaviour
     {
         float currentTime = 0f;
 
-        transform.localPosition = old_pos;
+        transform.position = old_pos;
 
         while (currentTime < duration)
         {
@@ -99,11 +102,11 @@ public class DataManager : MonoBehaviour
             // 현재 경과 시간을 전체 시간으로 나누어 0~1 사이의 비율(t)을 만듭니다.
             float t = currentTime / duration;
 
-            transform.localPosition = Vector3.Lerp(old_pos, new_pos, t);
+            transform.position = Vector3.Lerp(old_pos, new_pos, t);
 
             yield return null;
         }
 
-        transform.localPosition = new_pos;
+        transform.position = new_pos;
     }
 }
