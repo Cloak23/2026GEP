@@ -12,7 +12,7 @@ using UnityEngine;
 public class CameraSwitch : MonoBehaviour
 {
     [SerializeField]
-    private float zoom_in_size = 1.8f;
+    private float zoom_in_size = 3f;
     [SerializeField]
     private float zoom_out_size = 10f;
     [SerializeField]
@@ -25,6 +25,7 @@ public class CameraSwitch : MonoBehaviour
     private void OnEnable()
     {
         main_camera = Camera.main;
+        main_camera.orthographicSize = zoom_in_size;
     }
 
     void Update()

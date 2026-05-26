@@ -17,30 +17,33 @@ public class CameraFollow : MonoBehaviour
     public Tilemap tilemap;
 
     [Header("Ä«¸Þ¶ó ½ºÅÈ")]
-    public float speed = 5f;
-    public Vector3 offset;
+    public float speed = 2f;
+    public Vector3 offset = new Vector3(0, 0, -10);
 
     private DataManager data;
     private Camera _camera;
 
     private Vector3 target_pos;
+    private MineMapRenderer m_Renderer;
 
     private void Start()
     {
         data = DataManager.Instance;
+        m_Renderer = MineMapRenderer.Instance;
         _camera = Camera.main;
         target_pos = _camera.transform.position;
-        data.pos_change.AddListener(UpdateCameraPos);
+        data.e_pos_change.AddListener(UpdateCameraPos);
+        UpdateCameraPos(data.PlayerPos, data.PlayerPos);
     }
 
     private void OnDestroy()
     {
-        data.pos_change.RemoveListener(UpdateCameraPos);
+        data.e_pos_change.RemoveListener(UpdateCameraPos);
     }
 
     public void UpdateCameraPos(Vector2Int old_pos, Vector2Int new_pos)
     {
-        Vector3 cell_center_world = tilemap.GetCellCenterWorld(new Vector3Int(new_pos.x, new_pos.y, 0));
+        Vector3 cell_center_world = tilemap.GetCellCenterWorld(m_Renderer.ToRoomCell(new_pos));
 
         target_pos = cell_center_world + offset;
     }

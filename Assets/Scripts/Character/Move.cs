@@ -22,20 +22,23 @@ public class Move : MonoBehaviour
     private DataManager data;
     private bool move_lock;
     private UnityAction<Vector2Int, Vector2Int> move_action;
+    private MineMapRenderer m_Renderer;
+    private GameManager game_manager;
 
     private void Start()
     {
         data = DataManager.Instance;
+        m_Renderer = MineMapRenderer.Instance;
+        game_manager = GameManager.Instance;
         move_action = (a, b) => { StartCoroutine(MoveAnimation(a, b)); };
-        data.pos_change.AddListener(move_action);
-        transform.position = tilemap.GetCellCenterWorld(new Vector3Int(data.PlayerPos.x, data.PlayerPos.y, 0));
+        data.e_pos_change.AddListener(move_action);
     }
 
     private void OnDestroy()
     {
         if (data != null && move_action != null)
         {
-            data.pos_change.RemoveListener(move_action);
+            data.e_pos_change.RemoveListener(move_action);
         }
     }
 
@@ -70,28 +73,34 @@ public class Move : MonoBehaviour
 
         Debug.Log("Player Pos : " + data.PlayerPos.x + ", " + data.PlayerPos.y);
 
-        Vector2Int next_grid_pos = data.PlayerPos + dir;
+        //Vector2Int next_grid_pos = data.PlayerPos + dir;
 
-        int map_width = data.map.GetLength(0);
-        int map_height = data.map.GetLength(1);
+        //int map_width = data.map.width;
+        //int map_height = data.map.height;
 
-        if (next_grid_pos.x < 0 || next_grid_pos.x >= map_width || next_grid_pos.y < 0 || next_grid_pos.y >= map_height)
-        {
-            Debug.LogWarning("가장자리 도착");
-            move_lock = false;
-            return;
-        }
+        //if (next_grid_pos.x < 0 || next_grid_pos.x >= map_width || next_grid_pos.y < 0 || next_grid_pos.y >= map_height)
+        //{
+        //    Debug.LogWarning("가장자리 도착");
+        //    move_lock = false;
+        //    return;
+        //}
 
         data.Move(dir);
     }
 
     IEnumerator MoveAnimation(Vector2Int old_pos, Vector2Int new_pos)
     {
+        if (old_pos.Equals(new_pos))
+        {
+            move_lock = false;
+            yield break;
+        }
+
         // 이전 위치 변환
-        Vector3 old_player_pos = tilemap.GetCellCenterWorld(new Vector3Int(old_pos.x, old_pos.y, 0));
+        Vector3 old_player_pos = tilemap.GetCellCenterWorld(m_Renderer.ToRoomCell(old_pos));
 
         // 새로운 위치 변환
-        Vector3 new_player_pos = tilemap.GetCellCenterWorld(new Vector3Int(new_pos.x, new_pos.y, 0));
+        Vector3 new_player_pos = tilemap.GetCellCenterWorld(m_Renderer.ToRoomCell(new_pos));
 
         // 맵이랑 겹치도록
         old_player_pos.z = 0f;
