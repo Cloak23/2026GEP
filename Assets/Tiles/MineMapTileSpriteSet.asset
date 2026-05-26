@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1e124486a8e6c040a534ab477d7cb2f, type: 3}
+  m_Name: MineMapTileSpriteSet
+  m_EditorClassIdentifier: 
+  noWallTile: {fileID: 11400000, guid: 9766577ffc21a3643ae5dd5b3f574e8b, type: 2}
+  passageHorizontalTile: {fileID: 11400000, guid: ef52f40e811a8f34f8f0300c373a83c3, type: 2}
+  passageVerticalTile: {fileID: 11400000, guid: f2aed37112a1aed40b6aa510ba1792cb, type: 2}
+  wallTopTile: {fileID: 11400000, guid: f2bdf7912bc74ed498009ea70cc27638, type: 2}
+  wallRightTile: {fileID: 11400000, guid: 8d3869e83b99dd2459f044d78b837e0d, type: 2}
+  wallBottomTile: {fileID: 11400000, guid: 2ba241d859dd5384fabc357d65bff2fa, type: 2}
+  wallLeftTile: {fileID: 11400000, guid: 12bc78cd170bb12458921cd6cf5460e5, type: 2}
+  wallTopRightTile: {fileID: 11400000, guid: c1f14a3c3c77a86479a8bb639050e29e, type: 2}
+  wallRightBottomTile: {fileID: 11400000, guid: 43daa81407dc71d43aac58a93d525e7c, type: 2}
+  wallBottomLeftTile: {fileID: 11400000, guid: acfcd02d9b1338244a0c0fcdd80ad190, type: 2}
+  wallLeftTopTile: {fileID: 11400000, guid: 0088124a4f765664693d892f12d22c13, type: 2}
+  wallTopBottomTile: {fileID: 11400000, guid: ef52f40e811a8f34f8f0300c373a83c3, type: 2}
+  wallLeftRightTile: {fileID: 11400000, guid: f2aed37112a1aed40b6aa510ba1792cb, type: 2}
+  wallLeftRightBottomTile: {fileID: 11400000, guid: 481ad5b6cf158c742b825760db18612d, type: 2}
+  wallTopRightBottomTile: {fileID: 11400000, guid: 80c9ccf12b761f14cb69df62680f181f, type: 2}
+  wallLeftTopRightTile: {fileID: 11400000, guid: 05bc5f8d6b9ae24469e0a23570d2d17a, type: 2}
+  wallTopBottomLeftTile: {fileID: 11400000, guid: 7c63313ebf64371439c4bf2e8eb8bc67, type: 2}
+  wallAllTile: {fileID: 11400000, guid: 348fa4d168c978343a2272ebef8e1ff6, type: 2}
+  startTile: {fileID: 11400000, guid: 5bbba1cb1e371c848a52f087f6ab6862, type: 2}
+  goalTile: {fileID: 11400000, guid: a83ea0b7a41813a4196d6ecc27432bc3, type: 2}
+  mineTile: {fileID: 11400000, guid: 579c21fcda64f204a904b3fa3084caca, type: 2}
+  hiddenMineTile: {fileID: 11400000, guid: 579c21fcda64f204a904b3fa3084caca, type: 2}
+  safePathDebugTile: {fileID: 11400000, guid: 5fa981e90060692479647aac21069956, type: 2}
+  numberTiles:
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 25e6e95d03ea40542947267a123f8081, type: 2}
+  - {fileID: 11400000, guid: 4524de7382172f940be94cc7a8b000a7, type: 2}
+  - {fileID: 11400000, guid: b2373be10f0970549bf2929971aada98, type: 2}
+  - {fileID: 11400000, guid: 0ce7c5b88636a5140b618f517c119ef1, type: 2}
+  - {fileID: 11400000, guid: 3e76ea386f0779c4883a846654011357, type: 2}
+  - {fileID: 11400000, guid: d6c709821ce4a7343aa08155ec666eeb, type: 2}
+  - {fileID: 11400000, guid: d9336ce91c0c6e74eb7163a34f3cb861, type: 2}
+  - {fileID: 11400000, guid: 995ba5bb3806860429a02ce125cc9da4, type: 2}
+  coinTile: {fileID: 11400000, guid: 755b964f426e8494aa8a7d386a2b3874, type: 2}
+  coinAmountTiles: []
+  defaultItemTile: {fileID: 11400000, guid: 531127d1ca4a76a47b44d3064442c146, type: 2}
+  itemTiles: []
+  missingTile: {fileID: 11400000, guid: c07952388af649e4dadaf01d0c381e7c, type: 2}
