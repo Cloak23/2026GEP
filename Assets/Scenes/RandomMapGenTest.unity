@@ -392,6 +392,53 @@ Transform:
   - {fileID: 1359232783}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &421569652
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 421569654}
+  - component: {fileID: 421569653}
+  m_Layer: 0
+  m_Name: AI_Helper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &421569653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421569652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 099745075f732154fabdabb1b16b05b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gasURL: https://script.google.com/macros/s/AKfycbweMu7YThfX-ZfHE-j5OtBNMubDsYN5OFLyZpeidcSPbFJTQzst2sjQprEITsZF-bZ6/exec
+  mapGenerator: {fileID: 1697109621}
+  cooldownDuration: 10
+--- !u!4 &421569654
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421569652}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1742,3 +1789,4 @@ SceneRoots:
   - {fileID: 838470141}
   - {fileID: 110700144}
   - {fileID: 1010983436}
+  - {fileID: 421569654}
