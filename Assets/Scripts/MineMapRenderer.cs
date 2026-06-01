@@ -14,6 +14,9 @@ public class MineMapRenderer : MonoBehaviour
     public Tilemap overlayTilemap; // 지뢰, 숫자 등을 맵 위에 렌더링
     public Tilemap debugTilemap; // 디버깅용
 
+    [Tooltip("Tilemap used only for hiding/revealing the rendered map.")]
+    public Tilemap coverTilemap;
+
     [Header("Rendering")]
     public bool generateMapBeforeRender = true;
     public bool renderOnStart = true;
@@ -22,6 +25,12 @@ public class MineMapRenderer : MonoBehaviour
     public bool connectAllAdjacentRooms = true;
     public bool showSafePathDebug = false; // 렌더링시에 체크해줘야 디버깅 safe path 보임
     public bool showSafePathConnections = true;
+
+    [Header("Cover")]
+    [Tooltip("If enabled, the cover layer is created after each map render.")]
+    public bool coverMapOnRender = false;
+    [Tooltip("If enabled, cover every rendered cell. If disabled, cover only room centers.")]
+    public bool coverWholeMap = false;
 
     public MineMapData CurrentMap { get; private set; }
 
@@ -91,9 +100,15 @@ public class MineMapRenderer : MonoBehaviour
         RenderWallJunctions(mapData);
         RenderOverlays(mapData);
         RenderSafePathDebug(mapData);
+        RenderCover(mapData);
 
         wallTilemap.CompressBounds();
         overlayTilemap.CompressBounds();
+
+        if (coverTilemap != null)
+        {
+            coverTilemap.CompressBounds();
+        }
 
         if (debugTilemap != null)
         {
@@ -114,10 +129,160 @@ public class MineMapRenderer : MonoBehaviour
             overlayTilemap.ClearAllTiles();
         }
 
+        if (coverTilemap != null)
+        {
+            coverTilemap.ClearAllTiles();
+        }
+
         if (debugTilemap != null)
         {
             debugTilemap.ClearAllTiles();
         }
+    }
+
+    /// <summary>
+    /// Covers the currently rendered map using the cover settings in this renderer.
+    /// </summary>
+    [ContextMenu("Cover Current Map")]
+    public void CoverCurrentMap()
+    {
+        if (CurrentMap == null)
+        {
+            Debug.LogWarning("MineMapRenderer could not cover because there is no current MineMapData.", this);
+            return;
+        }
+
+        CoverMap(CurrentMap);
+    }
+
+    /// <summary>
+    /// Clears the cover tilemap, then covers either room centers or the full visual map.
+    /// </summary>
+    public void CoverMap(MineMapData mapData)
+    {
+        if (mapData == null || !ValidateCoverReferences())
+        {
+            return;
+        }
+
+        coverTilemap.ClearAllTiles();
+
+        if (coverWholeMap)
+        {
+            CoverVisualMap(mapData);
+            coverTilemap.CompressBounds();
+            return;
+        }
+
+        CoverRoomCenters(mapData);
+        coverTilemap.CompressBounds();
+    }
+
+    /// <summary>
+    /// Covers only the playable room cells. Use this for minesweeper-style per-room hiding.
+    /// </summary>
+    private void CoverRoomCenters(MineMapData mapData)
+    {
+        for (int x = 0; x < mapData.width; x++)
+        {
+            for (int y = 0; y < mapData.height; y++)
+            {
+                coverTilemap.SetTile(ToRoomCell(new Vector2Int(x, y)), tileSet.coverTile);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Covers every rendered Tilemap cell, including room centers, walls, and passages.
+    /// </summary>
+    private void CoverVisualMap(MineMapData mapData)
+    {
+        int visualWidth = mapData.width * 2 + 1;
+        int visualHeight = mapData.height * 2 + 1;
+
+        for (int x = 0; x < visualWidth; x++)
+        {
+            for (int y = 0; y < visualHeight; y++)
+            {
+                coverTilemap.SetTile(new Vector3Int(x, y, 0), tileSet.coverTile);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Reveals one room by removing the cover from a map coordinate, such as player position.
+    /// </summary>
+    public void ClearCoverTile(Vector2Int mapPosition)
+    {
+        if (CurrentMap == null || coverTilemap == null)
+        {
+            return;
+        }
+
+        if (!CurrentMap.IsInBounds(mapPosition))
+        {
+            Debug.LogWarning($"MineMapRenderer could not clear cover outside map bounds: {mapPosition}.", this);
+            return;
+        }
+
+        ClearCoverCell(ToRoomCell(mapPosition));
+    }
+
+    /// <summary>
+    /// Hides one room again by placing the cover on a map coordinate.
+    /// </summary>
+    public void SetCoverTile(Vector2Int mapPosition)
+    {
+        if (CurrentMap == null)
+        {
+            return;
+        }
+
+        if (!CurrentMap.IsInBounds(mapPosition))
+        {
+            Debug.LogWarning($"MineMapRenderer could not set cover outside map bounds: {mapPosition}.", this);
+            return;
+        }
+
+        SetCoverCell(ToRoomCell(mapPosition));
+    }
+
+    /// <summary>
+    /// Reveals one exact Tilemap cell. Use this when full-map cover mode is enabled.
+    /// </summary>
+    public void ClearCoverCell(Vector3Int coverCell)
+    {
+        if (CurrentMap == null || coverTilemap == null)
+        {
+            return;
+        }
+
+        if (!IsInVisualBounds(CurrentMap, coverCell))
+        {
+            Debug.LogWarning($"MineMapRenderer could not clear cover outside visual map bounds: {coverCell}.", this);
+            return;
+        }
+
+        coverTilemap.SetTile(coverCell, null);
+    }
+
+    /// <summary>
+    /// Hides one exact Tilemap cell again. Use this when full-map cover mode is enabled.
+    /// </summary>
+    public void SetCoverCell(Vector3Int coverCell)
+    {
+        if (CurrentMap == null || !ValidateCoverReferences())
+        {
+            return;
+        }
+
+        if (!IsInVisualBounds(CurrentMap, coverCell))
+        {
+            Debug.LogWarning($"MineMapRenderer could not set cover outside visual map bounds: {coverCell}.", this);
+            return;
+        }
+
+        coverTilemap.SetTile(coverCell, tileSet.coverTile);
     }
 
     private void RenderRoomCenters(MineMapData mapData)
@@ -291,6 +456,19 @@ public class MineMapRenderer : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Applies the cover layer after map rendering when Cover Map On Render is enabled.
+    /// </summary>
+    private void RenderCover(MineMapData mapData)
+    {
+        if (!coverMapOnRender)
+        {
+            return;
+        }
+
+        CoverMap(mapData);
+    }
+
     private void RenderSafePathDebug(MineMapData mapData)
     {
         if (!showSafePathDebug || debugTilemap == null || tileSet.safePathDebugTile == null || mapData.safePath == null)
@@ -369,9 +547,28 @@ public class MineMapRenderer : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Converts a logical map coordinate to the rendered room-center Tilemap cell.
+    /// </summary>
     public Vector3Int ToRoomCell(Vector2Int mapPosition)
     {
         return new Vector3Int(mapPosition.x * 2 + 1, mapPosition.y * 2 + 1, 0);
+    }
+
+    /// <summary>
+    /// Checks bounds in rendered Tilemap-cell space, not logical map-coordinate space.
+    /// </summary>
+    private bool IsInVisualBounds(MineMapData mapData, Vector3Int cell)
+    {
+        if (mapData == null)
+        {
+            return false;
+        }
+
+        int visualWidth = mapData.width * 2 + 1;
+        int visualHeight = mapData.height * 2 + 1;
+
+        return cell.x >= 0 && cell.x < visualWidth && cell.y >= 0 && cell.y < visualHeight;
     }
 
     private bool ValidateReferences(bool requireGenerator)
@@ -403,6 +600,37 @@ public class MineMapRenderer : MonoBehaviour
         if (showSafePathDebug && debugTilemap == null)
         {
             Debug.LogError("MineMapRenderer requires a debug Tilemap reference when Show Safe Path Debug is enabled.", this);
+            return false;
+        }
+
+        if (coverMapOnRender && !ValidateCoverReferences())
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Validates references required only when the cover layer is actually used.
+    /// </summary>
+    private bool ValidateCoverReferences()
+    {
+        if (coverTilemap == null)
+        {
+            Debug.LogError("MineMapRenderer requires a cover Tilemap reference when map cover is used.", this);
+            return false;
+        }
+
+        if (tileSet == null)
+        {
+            Debug.LogError("MineMapRenderer requires a MineMapTileSpriteSet reference when map cover is used.", this);
+            return false;
+        }
+
+        if (tileSet.coverTile == null)
+        {
+            Debug.LogError("MineMapRenderer requires a cover Tile when map cover is used.", this);
             return false;
         }
 

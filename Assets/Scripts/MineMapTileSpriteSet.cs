@@ -46,6 +46,10 @@ public class MineMapTileSpriteSet : ScriptableObject
     public TileBase mineTile;
     public TileBase hiddenMineTile;
 
+    [Header("Cover")]
+    [Tooltip("Tile used by MineMapRenderer to hide unrevealed map cells.")]
+    public TileBase coverTile;
+
     [Header("Debug")]
     public TileBase safePathDebugTile;
 
