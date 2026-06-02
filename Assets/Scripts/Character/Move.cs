@@ -96,6 +96,17 @@ public class Move : MonoBehaviour
             yield break;
         }
 
+        float distance = Vector2Int.Distance(old_pos, new_pos);
+        bool isTeleport = distance > 1.5f;
+
+        Collider2D playerCollider = GetComponent<Collider2D>();
+
+        // 맵을 넘어가는 중에는 지뢰와 충돌하지 않도록 설정
+        if (isTeleport && playerCollider != null)
+        {
+            playerCollider.enabled = false;
+        }
+
         // 이전 위치 변환
         Vector3 old_player_pos = tilemap.GetCellCenterWorld(m_Renderer.ToRoomCell(old_pos));
 
@@ -107,6 +118,12 @@ public class Move : MonoBehaviour
         new_player_pos.z = 0f;
 
         yield return StartCoroutine(data.LerpMove(old_player_pos, new_player_pos, transform, anim_duration));
+
+        if (isTeleport && playerCollider != null)
+        {
+            playerCollider.enabled = true;
+        }
+
 
         move_lock = false;
     }

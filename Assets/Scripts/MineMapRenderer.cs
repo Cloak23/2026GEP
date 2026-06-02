@@ -25,6 +25,9 @@ public class MineMapRenderer : MonoBehaviour
 
     public MineMapData CurrentMap { get; private set; }
 
+    public GameObject coverPrefab;       //덮개
+    public Transform coverContainer;
+
     private void Reset()
     {
         mapGenerator = GetComponent<MineMapGenerator>();
@@ -32,7 +35,7 @@ public class MineMapRenderer : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
@@ -92,6 +95,8 @@ public class MineMapRenderer : MonoBehaviour
         RenderOverlays(mapData);
         RenderSafePathDebug(mapData);
 
+        SpawnCovers(mapData);
+
         wallTilemap.CompressBounds();
         overlayTilemap.CompressBounds();
 
@@ -118,6 +123,17 @@ public class MineMapRenderer : MonoBehaviour
         {
             debugTilemap.ClearAllTiles();
         }
+
+        if (coverContainer != null)
+        {
+            for (int i = coverContainer.childCount - 1; i >= 0; i--)
+            {
+                if (Application.isPlaying) Destroy(coverContainer.GetChild(i).gameObject);
+                else DestroyImmediate(coverContainer.GetChild(i).gameObject);
+            }
+        }
+
+
     }
 
     private void RenderRoomCenters(MineMapData mapData)
@@ -407,5 +423,43 @@ public class MineMapRenderer : MonoBehaviour
         }
 
         return true;
+    }
+
+
+    private void SpawnCovers(MineMapData mapData)
+    {
+        if (coverPrefab == null) return;
+
+        for (int x = 0; x < mapData.width; x++)
+        {
+            for (int y = 0; y < mapData.height; y++)
+            {
+                TileData tileData = mapData.tiles[x, y];
+
+                // 시작 지점은 처음부터 보이게 하려면 덮개를 생성하지 않고 바로 열림 처리
+                if (tileData.isStart)
+                {
+                    tileData.isRevealed = true;
+                    continue;
+                }
+
+                // 타일맵의 그리드 좌표를 실제 화면(월드) 좌표로 변환
+                Vector3Int cellPos = ToRoomCell(new Vector2Int(x, y));
+                Vector3 worldPos = wallTilemap.GetCellCenterWorld(cellPos);
+
+                // 화면에 덮개 프리팹 생성! (coverContainer 안에 깔끔하게 정리됨)
+                GameObject newCover = Instantiate(coverPrefab, worldPos, Quaternion.identity, coverContainer);
+
+                // 방금 만든 TileRevealByTouch 스크립트를 찾아 실제 맵 데이터(주민등록증) 쥐어주기
+                TileRevealByTouch revealScript = newCover.GetComponent<TileRevealByTouch>();
+                if (revealScript != null)
+                {
+                    revealScript.SetupLogicalTile(tileData);
+                }
+            }
+        }
+
+
+
     }
 }
