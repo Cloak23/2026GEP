@@ -44,7 +44,8 @@ public class Move : MonoBehaviour
 
     void Update()
     {
-        if (move_lock)
+        //move_lock 에 text입력 시 이동 방지 코드 추가
+        if (move_lock || AIManager.windowOpen)
         {
             return;
         }
