@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,24 +6,29 @@ using UnityEngine.Tilemaps;
 
 /// <summary>
 /// 2026.05.25
-/// ½Å¿ø¿µ
+/// ì‹ ì›ì˜
 /// 
-/// ÀÌµ¿ ÀÔ·Â ¹Ş´Â ½ºÅ©¸³Æ®
+/// ì´ë™ ì…ë ¥ ë°›ëŠ” ìŠ¤í¬ë¦½íŠ¸
 /// </summary>
 
 public class Move : MonoBehaviour
 {
-    [Header("¿ÜºÎ ÄÄÆ÷³ÍÆ® ¿¬°á")]
+    [Header("ì™¸ë¶€ ì»´í¬ë„ŒíŠ¸ ì—°ê²°")]
     public Tilemap tilemap;
 
-    [Header("ÇÃ·¹ÀÌ¾î ½ºÅÈ")]
+    [Header("í”Œë ˆì´ì–´ ìŠ¤íƒ¯")]
     public float anim_duration;
+
+    [Header("ê¹ƒë°œ í”„ë¦¬íŒ¹")]
+    public GameObject flag;
 
     private DataManager data;
     private bool move_lock;
     private UnityAction<Vector2Int, Vector2Int> move_action;
     private MineMapRenderer m_Renderer;
     private GameManager game_manager;
+
+    private Dictionary<Vector2Int, GameObject> spawnedflag = new Dictionary<Vector2Int, GameObject>();
 
     private void Start()
     {
@@ -44,10 +49,15 @@ public class Move : MonoBehaviour
 
     void Update()
     {
-        //move_lock ¿¡ textÀÔ·Â ½Ã ÀÌµ¿ ¹æÁö ÄÚµå Ãß°¡
+        //move_lock ì— textì…ë ¥ ì‹œ ì´ë™ ë°©ì§€ ì½”ë“œ ì¶”ê°€
         if (move_lock || AIManager.windowOpen)
         {
             return;
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            ToggleFlagWithMouse();
         }
 
         if (Input.GetKeyDown(KeyCode.W))
@@ -70,6 +80,25 @@ public class Move : MonoBehaviour
 
     public void MoveGrid(Vector2Int dir)
     {
+        //ê¹ƒë°œ ìœ ë¬´ í™•ì¸
+        Vector2Int nextPos = data.PlayerPos + dir;
+
+        if (data.map != null &&
+            nextPos.x >= 0 && nextPos.x < data.map.width &&
+            nextPos.y >= 0 && nextPos.y < data.map.height)
+        {
+            var targetTile = data.map.tiles[nextPos.x, nextPos.y];
+
+            // ê¹ƒë°œ ê½‚í˜€ìˆë‹¤ë©´ ì¢…ë£Œ(return)
+            if (targetTile != null && targetTile.isFlagged)
+            {
+                Debug.Log("ê¹ƒë°œì´ ê½‚íŒ ê³³ìœ¼ë¡œëŠ” ì´ë™í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
+                return;
+            }
+        }
+
+
+
         move_lock = true;
 
         Debug.Log("Player Pos : " + data.PlayerPos.x + ", " + data.PlayerPos.y);
@@ -81,7 +110,7 @@ public class Move : MonoBehaviour
 
         //if (next_grid_pos.x < 0 || next_grid_pos.x >= map_width || next_grid_pos.y < 0 || next_grid_pos.y >= map_height)
         //{
-        //    Debug.LogWarning("°¡ÀåÀÚ¸® µµÂø");
+        //    Debug.LogWarning("ê°€ì¥ìë¦¬ ë„ì°©");
         //    move_lock = false;
         //    return;
         //}
@@ -102,19 +131,19 @@ public class Move : MonoBehaviour
 
         Collider2D playerCollider = GetComponent<Collider2D>();
 
-        // ¸ÊÀ» ³Ñ¾î°¡´Â Áß¿¡´Â Áö·Ú¿Í Ãæµ¹ÇÏÁö ¾Êµµ·Ï ¼³Á¤
+        // ë§µì„ ë„˜ì–´ê°€ëŠ” ì¤‘ì—ëŠ” ì§€ë¢°ì™€ ì¶©ëŒí•˜ì§€ ì•Šë„ë¡ ì„¤ì •
         if (isTeleport && playerCollider != null)
         {
             playerCollider.enabled = false;
         }
 
-        // ÀÌÀü À§Ä¡ º¯È¯
+        // ì´ì „ ìœ„ì¹˜ ë³€í™˜
         Vector3 old_player_pos = tilemap.GetCellCenterWorld(m_Renderer.ToRoomCell(old_pos));
 
-        // »õ·Î¿î À§Ä¡ º¯È¯
+        // ìƒˆë¡œìš´ ìœ„ì¹˜ ë³€í™˜
         Vector3 new_player_pos = tilemap.GetCellCenterWorld(m_Renderer.ToRoomCell(new_pos));
 
-        // ¸ÊÀÌ¶û °ãÄ¡µµ·Ï
+        // ë§µì´ë‘ ê²¹ì¹˜ë„ë¡
         old_player_pos.z = 0f;
         new_player_pos.z = 0f;
 
@@ -128,4 +157,76 @@ public class Move : MonoBehaviour
 
         move_lock = false;
     }
+
+
+
+
+    private void ToggleFlagWithMouse()
+    {
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPos.z = 0f;
+        Vector3Int cellPos = tilemap.WorldToCell(mouseWorldPos);
+
+        if (data.map != null)
+        {
+            Vector2Int gridPos = new Vector2Int(-1, -1);
+
+            // í™”ë©´ ì¢Œí‘œ -> ë°°ì—´ ì¢Œí‘œ ì—­ì¶”ì 
+            for (int x = 0; x < data.map.width; x++)
+            {
+                for (int y = 0; y < data.map.height; y++)
+                {
+                    if (m_Renderer.ToRoomCell(new Vector2Int(x, y)) == cellPos)
+                    {
+                        gridPos = new Vector2Int(x, y);
+                        break;
+                    }
+                }
+                if (gridPos.x != -1) break;
+            }
+
+            if (gridPos.x != -1)
+            {
+                var clickedTile = data.map.tiles[gridPos.x, gridPos.y];
+
+                // ì—´ë¦¬ì§€ ì•Šì€ íƒ€ì¼ì—ë§Œ ê¹ƒë°œ
+                if (clickedTile != null && !clickedTile.isRevealed)
+                {
+                    clickedTile.isFlagged = !clickedTile.isFlagged;
+
+                    if (clickedTile.isFlagged)
+                    {
+                        // ê¹ƒë°œ ê½‚ê¸°
+                        if (flag != null)
+                        {
+                            Vector3 spawnPos = tilemap.GetCellCenterWorld(cellPos);
+                            spawnPos.z = -1f;
+
+                            GameObject newFlag = Instantiate(flag, spawnPos, Quaternion.identity);
+                            spawnedflag.Add(gridPos, newFlag); // ë³´ê´€í•¨ì— ì €ì¥
+                        }
+                        else
+                        {
+                            Debug.LogWarning("ì¸ìŠ¤í™í„°ì— Flag Prefabì´ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤!");
+                        }
+                    }
+                    else
+                    {
+                        // ê¹ƒë¹¨ ë½‘ê¸°
+                        if (spawnedflag.ContainsKey(gridPos))
+                        {
+                            Destroy(spawnedflag[gridPos]);
+                            spawnedflag.Remove(gridPos); // ë³´ê´€í•¨ì—ì„œ ì œê±°
+                        }
+                    }
+                    Debug.Log($"[{gridPos.x}, {gridPos.y}] ê¹ƒë°œ ìƒíƒœ: {clickedTile.isFlagged}");
+                }
+            }
+        }
+
+    }
+
+
+
+
 }

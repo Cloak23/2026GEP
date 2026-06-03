@@ -1671,6 +1671,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tilemap: {fileID: 835718024}
   anim_duration: 0.5
+  flag: {fileID: 1420146467188646734, guid: c8bf8ab1916841a44a9120ff4955f690, type: 3}
 --- !u!212 &838470140
 SpriteRenderer:
   m_ObjectHideFlags: 0
