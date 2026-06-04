@@ -151,6 +151,8 @@ public class AIManager : MonoBehaviour
         GasEnvelopeDto envelope = new GasEnvelopeDto { mapData = mapPacket, playerQuery = query };
         string requestJson = JsonUtility.ToJson(envelope);
 
+        Debug.Log("<color=yellow>[AI로 전송되는 맵 데이터 확인]</color>\n" + requestJson); //정보 정확히 가는지 확인용 디버그 로그
+
         using (UnityWebRequest www = new UnityWebRequest(gasURL, "POST"))
         {
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(requestJson);
