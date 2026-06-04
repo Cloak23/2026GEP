@@ -472,6 +472,8 @@ public class MineMapGenerator : MonoBehaviour
         }
     }
 
+
+
     private int PlayableMinX => Mathf.Clamp(margin, 0, width - 1);
     private int PlayableMaxX => Mathf.Clamp(width - 1 - margin, PlayableMinX, width - 1);
     private int PlayableMinY => Mathf.Clamp(margin, 0, height - 1);

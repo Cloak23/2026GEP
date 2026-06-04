@@ -11,6 +11,8 @@ public class TileData
     public bool isGoal = false;
     public bool isRevealed = false;
 
+    public bool isFlagged = false;
+
     public int adjacentMineCount = 0;
 
     public int tileCoin = 0;
