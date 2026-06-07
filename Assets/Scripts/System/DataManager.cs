@@ -19,12 +19,15 @@ public class DataManager : MonoBehaviour
 
     [Header("플레이어 스탯")]
     public int PLAYER_INIT_GOLD = 10;
+    public int ROULETTE_MAX_GOLD = 70;
+    public int ROULETTE_MIN_GOLD = -20; 
 
     public static DataManager Instance { get; private set; }
 
     public UnityEvent<Vector2Int, Vector2Int> e_pos_change = new();
     public UnityEvent<int, int> e_gold_change = new();
-
+    public UnityEvent e_roulette_start = new();
+    public UnityEvent e_roulette_end = new();
 
     private int player_gold = 10;
     private Vector2Int player_pos = new Vector2Int(0, 0);

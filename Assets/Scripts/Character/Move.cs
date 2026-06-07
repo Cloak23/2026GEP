@@ -23,7 +23,8 @@ public class Move : MonoBehaviour
     public GameObject flag;
 
     private DataManager data;
-    private bool move_lock;
+    private bool move_lock; 
+    private bool isRouletteActive = false;
     private UnityAction<Vector2Int, Vector2Int> move_action;
     private MineMapRenderer m_Renderer;
     private GameManager game_manager;
@@ -37,6 +38,8 @@ public class Move : MonoBehaviour
         game_manager = GameManager.Instance;
         move_action = (a, b) => { StartCoroutine(MoveAnimation(a, b)); };
         data.e_pos_change.AddListener(move_action);
+        data.e_roulette_start.AddListener(() => { isRouletteActive = true; });
+        data.e_roulette_end.AddListener(() => { isRouletteActive = false; });
     }
 
     private void OnDestroy()
@@ -47,10 +50,11 @@ public class Move : MonoBehaviour
         }
     }
 
+
     void Update()
     {
         //move_lock 에 text입력 시 이동 방지 코드 추가
-        if (move_lock || AIManager.windowOpen)
+        if (move_lock || AIManager.windowOpen || isRouletteActive)
         {
             return;
         }
@@ -117,6 +121,7 @@ public class Move : MonoBehaviour
 
         data.Move(dir);
     }
+
 
     IEnumerator MoveAnimation(Vector2Int old_pos, Vector2Int new_pos)
     {

@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RouletteSlot : MonoBehaviour
 {
@@ -24,6 +23,8 @@ public class RouletteSlot : MonoBehaviour
         if(data != null)
         {
             data.PlayerGold += gold_amount;
+            data.e_roulette_end.Invoke();
+            SceneManager.UnloadSceneAsync("Roulette");
         }
         else
         {
@@ -33,7 +34,7 @@ public class RouletteSlot : MonoBehaviour
 
     void RandomizeGold()
     {
-        gold_amount = Random.Range(-50, 50);
+        gold_amount = Random.Range(data.ROULETTE_MIN_GOLD, data.ROULETTE_MAX_GOLD);
     }
 
     void SetText()

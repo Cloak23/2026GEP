@@ -393,9 +393,9 @@ public class MineMapGenerator : MonoBehaviour
                 if (Random.value < itemChance)
                 {
                     tile.hasItem = true;
-                    tile.itemId = itemIds != null && itemIds.Length > 0
-                        ? itemIds[Random.Range(0, itemIds.Length)]
-                        : "DefaultItem";
+                    //tile.itemId = itemIds != null && itemIds.Length > 0
+                    //    ? itemIds[Random.Range(0, itemIds.Length)]
+                    //    : "DefaultItem";
                 }
             }
         }
