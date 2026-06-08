@@ -34,6 +34,7 @@ MonoBehaviour:
   goalTile: {fileID: 11400000, guid: a83ea0b7a41813a4196d6ecc27432bc3, type: 2}
   mineTile: {fileID: 11400000, guid: 579c21fcda64f204a904b3fa3084caca, type: 2}
   hiddenMineTile: {fileID: 11400000, guid: 579c21fcda64f204a904b3fa3084caca, type: 2}
+  coverTile: {fileID: 11400000, guid: fd30f025a6aa7d248bf525f01eae0947, type: 2}
   safePathDebugTile: {fileID: 11400000, guid: 5fa981e90060692479647aac21069956, type: 2}
   numberTiles:
   - {fileID: 0}

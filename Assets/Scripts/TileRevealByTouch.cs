@@ -1,4 +1,6 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TileRevealByTouch : MonoBehaviour
 {
@@ -53,6 +55,7 @@ public class TileRevealByTouch : MonoBehaviour
     public void RevealTile()
     {
         isRevealed = true;
+        ActiveTile();
 
         if (coverSquare != null)
         {
@@ -62,6 +65,23 @@ public class TileRevealByTouch : MonoBehaviour
         if (myLogicalTile != null)
         {
             myLogicalTile.isRevealed = true;
+        }
+    }
+
+    public void ActiveTile()
+    {
+        if (myLogicalTile.isMine)
+        {
+            
+        }
+        else if (myLogicalTile.isGoal)
+        {
+            SceneManager.LoadSceneAsync("Goal", LoadSceneMode.Additive);
+        }
+        else if (myLogicalTile.hasItem)
+        {
+            DataManager.Instance.e_roulette_start.Invoke();
+            SceneManager.LoadSceneAsync("Roulette", LoadSceneMode.Additive);
         }
     }
 }

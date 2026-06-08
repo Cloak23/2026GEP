@@ -20,7 +20,8 @@ public class DataManager : MonoBehaviour
 
     [Header("플레이어 스탯")]
     public int PLAYER_INIT_GOLD = 10;
-
+    public int ROULETTE_MAX_GOLD = 70;
+    public int ROULETTE_MIN_GOLD = -20;
 
     [Header("상점 업그레이드 레벨")]
     public int level_revival = 0;
@@ -28,15 +29,17 @@ public class DataManager : MonoBehaviour
     public int level_AIrequest = 0;
 
 
+    private GameOverShop Gover;
     public static DataManager Instance { get; private set; }
 
     public UnityEvent<Vector2Int, Vector2Int> e_pos_change = new();
     public UnityEvent<int, int> e_gold_change = new();
+    public UnityEvent e_roulette_start = new();
+    public UnityEvent e_roulette_end = new();
 
-
+    //Life 재화
     public UnityEvent<int, int> e_life_change = new();
     private int player_life = 0;
-
 
     private int player_gold = 10;
     private Vector2Int player_pos = new Vector2Int(0, 0);
@@ -66,6 +69,7 @@ public class DataManager : MonoBehaviour
         }
     }
 
+
     public int PlayerLife
     {
         get => player_life;
@@ -79,6 +83,7 @@ public class DataManager : MonoBehaviour
             e_life_change?.Invoke(old_life, value);
         }
     }
+
 
 
     public Vector2Int PlayerPos
@@ -106,51 +111,12 @@ public class DataManager : MonoBehaviour
         }
     }
 
-
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-
-        m_Generator = FindObjectOfType<MineMapGenerator>();
-        m_Renderer = FindObjectOfType<MineMapRenderer>();
-        game_manager = FindObjectOfType<GameManager>();
-
-
-        if (game_manager != null)
-        {
-            game_manager.e_stage_start.RemoveListener(InitStage);
-            game_manager.e_stage_start.AddListener(InitStage);
-      
-        }
-    }
-
-
     /*private void Start()
     {
         m_Renderer = MineMapRenderer.Instance;
         game_manager = GameManager.Instance;
         game_manager.e_stage_start.AddListener(InitStage);
     }*/
-
-    public void InitStage()
-    {
-        PlayerPos = map.start;
-        PlayerGold = PLAYER_INIT_GOLD;
-    }
-
-    public void Move(Vector2Int dir)
-    {
-        PlayerPos += dir;
-    }
 
     private void Awake()
     {
@@ -164,6 +130,42 @@ public class DataManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        m_Renderer = FindObjectOfType<MineMapRenderer>();
+        game_manager = FindObjectOfType<GameManager>();
+
+        if (game_manager != null)
+        {
+            game_manager.e_stage_start.RemoveListener(InitStage);
+            game_manager.e_stage_start.AddListener(InitStage);
+        }
+    }
+
+
+    public void InitStage()
+    {
+        PlayerPos = map.start;
+        PlayerGold = PLAYER_INIT_GOLD;
+    }
+
+    public void Move(Vector2Int dir)
+    {
+        PlayerPos += dir;
+    }
+
+
 
     public IEnumerator LerpMove(Vector3 old_pos, Vector3 new_pos, Transform transform, float duration)
     {

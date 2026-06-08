@@ -9,8 +9,11 @@ public class GameManager : MonoBehaviour
     public MineMapGenerator m_Generator;
 
     public static GameManager Instance;
+    
+    //¼öÁ¤, new Unity
+    public UnityEvent e_stage_start = new UnityEvent();
 
-    public UnityEvent e_stage_start;
+
     private DataManager data;
     private MineMapRenderer m_Renderer;
 
@@ -18,20 +21,21 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        Instance = this;
     }
     private void Start()
     {
         data = DataManager.Instance;
-        m_Renderer = MineMapRenderer.Instance;
+        m_Renderer = FindObjectOfType<MineMapRenderer>();
+        m_Generator = FindObjectOfType<MineMapGenerator>();
+
+        if (m_Generator == null)
+        {
+            m_Generator = FindObjectOfType<MineMapGenerator>();
+        }
+
+        StageStart();
+
     }
 
 

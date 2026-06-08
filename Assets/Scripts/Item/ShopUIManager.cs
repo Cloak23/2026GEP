@@ -14,7 +14,8 @@ public class ShopUIManager : MonoBehaviour
     public Color levelinactive = Color.white;
 
     [System.Serializable]
-    public class Items { 
+    public class Items
+    {
         public int currentlevel = 0;
         public int[] upgradecosts;
 
@@ -28,7 +29,8 @@ public class ShopUIManager : MonoBehaviour
     public Items opentile;
     public Items AIrequest;
 
-    private void Start() {
+    private void Start()
+    {
         revival.currentlevel = DataManager.Instance.level_revival;
         opentile.currentlevel = DataManager.Instance.level_opentile;
         AIrequest.currentlevel = DataManager.Instance.level_AIrequest;
@@ -53,7 +55,7 @@ public class ShopUIManager : MonoBehaviour
 
         if (DataManager.Instance.PlayerLife >= cost)
         {
-            DataManager.Instance.PlayerLife -= cost; 
+            DataManager.Instance.PlayerLife -= cost;
             item.currentlevel++;
 
             if (item == revival) DataManager.Instance.level_revival = item.currentlevel;
@@ -61,7 +63,7 @@ public class ShopUIManager : MonoBehaviour
             else if (item == AIrequest) DataManager.Instance.level_AIrequest = item.currentlevel;
 
 
-            UpdateAllUI(); 
+            UpdateAllUI();
         }
     }
 
@@ -101,7 +103,7 @@ public class ShopUIManager : MonoBehaviour
         else
         {
             item.needLife.text = "MAX LEVEL";
-            item.lvbutton.interactable = false; 
+            item.lvbutton.interactable = false;
         }
     }
 

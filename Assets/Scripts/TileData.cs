@@ -14,7 +14,6 @@ public class TileData
     public bool isFlagged = false;
 
     public int adjacentMineCount = 0;
-
     public int tileCoin = 0;
     public bool hasItem = false;
     public string itemId = "";
