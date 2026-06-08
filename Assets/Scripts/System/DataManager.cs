@@ -1,29 +1,41 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 2026.05.25
-/// ½Å¿ø¿µ
+/// ì‹ ì›ì˜
 /// 
-/// °ÔÀÓ ³»ÀÇ µ¥ÀÌÅÍ¸¦ ½Ì±ÛÅæÀ¸·Î Á¢±ÙÇÏ´Â ½ºÅ©¸³Æ®
+/// ê²Œì„ ë‚´ì˜ ë°ì´í„°ë¥¼ ì‹±ê¸€í†¤ìœ¼ë¡œ ì ‘ê·¼í•˜ëŠ” ìŠ¤í¬ë¦½íŠ¸
 /// 
-/// update 2026.05.26 : map generator¿Í ÇÕº´À¸·Î DataManager ³»ºÎÀÇ map »èÁ¦. ¸Ê µ¥ÀÌÅÍ´Â Renderer¿¡¼­ »ç¿ëÇÏ±â·Î ÇÔ.
+/// update 2026.05.26 : map generatorì™€ í•©ë³‘ìœ¼ë¡œ DataManager ë‚´ë¶€ì˜ map ì‚­ì œ. ë§µ ë°ì´í„°ëŠ” Rendererì—ì„œ ì‚¬ìš©í•˜ê¸°ë¡œ í•¨.
 /// </summary>
 
 public class DataManager : MonoBehaviour
 {
-    [Header("¿ÜºÎ ÄÄÆ÷³ÍÆ® ¿¬°á")]
+    [Header("ì™¸ë¶€ ì»´í¬ë„ŒíŠ¸ ì—°ê²°")]
     public MineMapGenerator m_Generator;
 
-    [Header("ÇÃ·¹ÀÌ¾î ½ºÅÈ")]
+    [Header("í”Œë ˆì´ì–´ ìŠ¤íƒ¯")]
     public int PLAYER_INIT_GOLD = 10;
+
+
+    [Header("ìƒì  ì—…ê·¸ë ˆì´ë“œ ë ˆë²¨")]
+    public int level_revival = 0;
+    public int level_opentile = 0;
+    public int level_AIrequest = 0;
+
 
     public static DataManager Instance { get; private set; }
 
     public UnityEvent<Vector2Int, Vector2Int> e_pos_change = new();
     public UnityEvent<int, int> e_gold_change = new();
+
+
+    public UnityEvent<int, int> e_life_change = new();
+    private int player_life = 0;
 
 
     private int player_gold = 10;
@@ -54,6 +66,21 @@ public class DataManager : MonoBehaviour
         }
     }
 
+    public int PlayerLife
+    {
+        get => player_life;
+        set
+        {
+            Debug.Log("Player Life Change " + player_life + " => " + value);
+
+            int old_life = player_life;
+            player_life = value;
+
+            e_life_change?.Invoke(old_life, value);
+        }
+    }
+
+
     public Vector2Int PlayerPos
     {
         get => player_pos;
@@ -72,19 +99,47 @@ public class DataManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogError("Bound Error : ÇÃ·¹ÀÌ¾î°¡ ¿µ¿ªÀ» ¹ş¾î³²");
+                    Debug.LogError("Bound Error : í”Œë ˆì´ì–´ê°€ ì˜ì—­ì„ ë²—ì–´ë‚¨");
                     e_pos_change?.Invoke(player_pos, player_pos);
                 }
             }
         }
     }
 
-    private void Start()
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+
+        m_Generator = FindObjectOfType<MineMapGenerator>();
+        m_Renderer = FindObjectOfType<MineMapRenderer>();
+        game_manager = FindObjectOfType<GameManager>();
+
+
+        if (game_manager != null)
+        {
+            game_manager.e_stage_start.RemoveListener(InitStage);
+            game_manager.e_stage_start.AddListener(InitStage);
+      
+        }
+    }
+
+
+    /*private void Start()
     {
         m_Renderer = MineMapRenderer.Instance;
         game_manager = GameManager.Instance;
         game_manager.e_stage_start.AddListener(InitStage);
-    }
+    }*/
 
     public void InitStage()
     {
@@ -120,7 +175,7 @@ public class DataManager : MonoBehaviour
         {
             currentTime += Time.deltaTime;
 
-            // ÇöÀç °æ°ú ½Ã°£À» ÀüÃ¼ ½Ã°£À¸·Î ³ª´©¾î 0~1 »çÀÌÀÇ ºñÀ²(t)À» ¸¸µì´Ï´Ù.
+            // í˜„ì¬ ê²½ê³¼ ì‹œê°„ì„ ì „ì²´ ì‹œê°„ìœ¼ë¡œ ë‚˜ëˆ„ì–´ 0~1 ì‚¬ì´ì˜ ë¹„ìœ¨(t)ì„ ë§Œë“­ë‹ˆë‹¤.
             float t = currentTime / duration;
 
             transform.position = Vector3.Lerp(old_pos, new_pos, t);
@@ -131,9 +186,9 @@ public class DataManager : MonoBehaviour
         transform.position = new_pos;
     }
 
-    // µğ¹ö±×¿ë
-    // ¼ıÀÚ¸ÊÀ» SlotData ¸ÊÀ¸·Î º¯È¯
-    // Generator¿Í ÇÕÄ£ ÀÌÈÄ·Ğ »ç¿ë X
+    // ë””ë²„ê·¸ìš©
+    // ìˆ«ìë§µì„ SlotData ë§µìœ¼ë¡œ ë³€í™˜
+    // Generatorì™€ í•©ì¹œ ì´í›„ë¡  ì‚¬ìš© X
     public SlotData[,] IntMapToSlotMap(int[,] input_map)
     {
         int width = input_map.GetLength(0);

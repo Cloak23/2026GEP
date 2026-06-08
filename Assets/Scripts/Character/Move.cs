@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 
 /// <summary>
@@ -21,6 +22,10 @@ public class Move : MonoBehaviour
 
     [Header("깃발 프리팹")]
     public GameObject flag;
+
+    [Header("게임 오버 UI")]
+    public GameObject gameOverPanel;
+
 
     private DataManager data;
     private bool move_lock;
@@ -95,8 +100,33 @@ public class Move : MonoBehaviour
                 Debug.Log("깃발이 꽂힌 곳으로는 이동할 수 없습니다.");
                 return;
             }
-        }
 
+
+            if (targetTile != null && !targetTile.isRevealed)
+            {
+                if (targetTile.isMine)
+                {
+                    // 지뢰 칸
+                    data.PlayerGold -= 100;
+                    Debug.Log($"지뢰 폭발 : 50 골드 차감 (현재 골드: {data.PlayerGold})");
+                }
+                else
+                {
+                    // 일반 칸. 랜덤 재화
+                    int randomReward = Random.Range(5, 10);
+                    data.PlayerGold += randomReward;
+                    Debug.Log($" 일반 칸 탐색 : {randomReward} 골드 획득 (현재 골드: {data.PlayerGold})");
+                }
+
+                // 💡 3. 골드가 0 이하가 되면 재화를 0으로 고정하고 즉시 게임 오버
+                if (data.PlayerGold <= 0)
+                {
+                    data.PlayerGold = 0;
+                    GameOver();
+                    return; // 이동을 실행하지 않고 함수를 종료하여 그 자리에 멈추게 합니다.
+                }
+            }
+        }
 
 
         move_lock = true;
@@ -117,6 +147,9 @@ public class Move : MonoBehaviour
 
         data.Move(dir);
     }
+
+
+
 
     IEnumerator MoveAnimation(Vector2Int old_pos, Vector2Int new_pos)
     {
@@ -158,8 +191,32 @@ public class Move : MonoBehaviour
         move_lock = false;
     }
 
+    private void GameOver()
+    {
+        Debug.Log("게임 오버.");
 
+        // 1. DataManager에 추가해 둔 라이프 재화 1 증가
+        data.PlayerLife += 1;
 
+        // 2. 화면이 멈춘 상태에서 키 입력이 먹히지 않도록 조작 잠금
+        AIManager.windowOpen = true;
+
+        // 3. 준비해 둔 게임 오버 UI 띄우기
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(true);
+        }
+    }
+
+    public void GoToShop()
+    {
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+
+        // 💡 "ShopScene" 자리에 실제 만드신 상점 씬의 정확한 이름을 적어주세요!
+        SceneManager.LoadScene("Item");
+
+        Debug.Log(" 상점으로 이동합니다.");
+    }
 
     private void ToggleFlagWithMouse()
     {

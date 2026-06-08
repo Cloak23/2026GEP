@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ShopUIManager : MonoBehaviour
 {
-    public int currentlife = 100; //죽은 횟수 누적되어야함
+    //public int currentlife = 100; //죽은 횟수 누적되어야함
     public TMP_Text lifetext;
 
     public Color activelevel = new Color(1f, 0.8f, 0f);
@@ -28,6 +29,11 @@ public class ShopUIManager : MonoBehaviour
     public Items AIrequest;
 
     private void Start() {
+        revival.currentlevel = DataManager.Instance.level_revival;
+        opentile.currentlevel = DataManager.Instance.level_opentile;
+        AIrequest.currentlevel = DataManager.Instance.level_AIrequest;
+
+
         revival.lvbutton.onClick.AddListener(() => TryUpgrade(revival));
         opentile.lvbutton.onClick.AddListener(() => TryUpgrade(opentile));
         AIrequest.lvbutton.onClick.AddListener(() => TryUpgrade(AIrequest));
@@ -45,10 +51,15 @@ public class ShopUIManager : MonoBehaviour
 
         int cost = item.upgradecosts[item.currentlevel];
 
-        if (currentlife >= cost)
+        if (DataManager.Instance.PlayerLife >= cost)
         {
-            currentlife -= cost; 
-            item.currentlevel++; 
+            DataManager.Instance.PlayerLife -= cost; 
+            item.currentlevel++;
+
+            if (item == revival) DataManager.Instance.level_revival = item.currentlevel;
+            else if (item == opentile) DataManager.Instance.level_opentile = item.currentlevel;
+            else if (item == AIrequest) DataManager.Instance.level_AIrequest = item.currentlevel;
+
 
             UpdateAllUI(); 
         }
@@ -58,7 +69,7 @@ public class ShopUIManager : MonoBehaviour
     {
         if (lifetext != null)
         {
-            lifetext.text = "LIFE : " + currentlife.ToString();
+            lifetext.text = "LIFE : " + DataManager.Instance.PlayerLife.ToString();
         }
 
         RefreshItemUI(revival);
@@ -85,7 +96,7 @@ public class ShopUIManager : MonoBehaviour
             int nextCost = item.upgradecosts[item.currentlevel];
             item.needLife.text = "NEED LIFE : " + nextCost;
 
-            item.lvbutton.interactable = (currentlife >= nextCost);
+            item.lvbutton.interactable = (DataManager.Instance.PlayerLife >= nextCost);
         }
         else
         {
@@ -93,5 +104,12 @@ public class ShopUIManager : MonoBehaviour
             item.lvbutton.interactable = false; 
         }
     }
+
+    public void ReturnToGame()
+    {
+        SceneManager.LoadScene("RandomMapGenTest");
+        Debug.Log(" 다시 게임으로 입장 합니다!");
+    }
+
 
 }
