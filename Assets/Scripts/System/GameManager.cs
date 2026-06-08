@@ -1,20 +1,30 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+
+/// <summary>
+/// 2026.05.26 ì‹ ì›ì˜
+/// ê²Œì„ ì „ì²´ì˜ ì§„í–‰ ê´€ë ¨ ë©”ì†Œë“œë¥¼ ëª¨ì•„ë‘” ìŠ¤í¬ë¦½íŠ¸
+/// </summary>
+
 
 public class GameManager : MonoBehaviour
 {
-    [Header("¿ÜºÎ ÄÄÆ÷³ÍÆ® ¿¬°á")]
+    [Header("ì™¸ë¶€ ì»´í¬ë„ŒíŠ¸ ì—°ê²°")]
     public MineMapGenerator m_Generator;
 
     public static GameManager Instance;
 
     public UnityEvent e_stage_start;
+    public UnityEvent e_stage_end;
+    public UnityEvent e_game_over;
+
     private DataManager data;
     private MineMapRenderer m_Renderer;
 
-    private int stage_index = 1;
+    public int stage_index { get; private set; } = 0;
 
     private void Awake()
     {
@@ -32,13 +42,18 @@ public class GameManager : MonoBehaviour
     {
         data = DataManager.Instance;
         m_Renderer = MineMapRenderer.Instance;
+        StageStart();
     }
 
 
-    // 2026.05.26 ½ºÅ×ÀÌÁö ³¡³ª´Â ÇÔ¼ö´Â ºĞ¸®Çß´Âµ¥, ³ªÁß¿¡ ÇÒ´ç·® Ã¼Å©ÇÒ¶§ ¼öÁ¤ÇØ¾ßÇÔ
+    // 2026.05.26 ìŠ¤í…Œì´ì§€ ëë‚˜ëŠ” í•¨ìˆ˜ëŠ” ë¶„ë¦¬í–ˆëŠ”ë°, ë‚˜ì¤‘ì— í• ë‹¹ëŸ‰ ì²´í¬í• ë•Œ ìˆ˜ì •í•´ì•¼í•¨
+    // 2026.06.09 ì—…ë°ì´íŠ¸ ì™„
     public void EndStage()
     {
-        StageStart();
+        // í˜¹ì‹œ ëª°ë¼ì„œ ë§Œë“  ì´ë²¤íŠ¸
+        e_stage_end.Invoke();
+
+        SceneManager.LoadSceneAsync("Goal", LoadSceneMode.Additive);
     }
 
 

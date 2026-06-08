@@ -1,10 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static Unity.Burst.Intrinsics.X86.Avx;
+
+/// <summary>
+/// 2026.06.07 신원영
+/// 
+/// 골드 변화에 반응해서 나오는 UI 이펙트를 담당하는 스크립트.
+/// 골드의 출처에 따라 UI의 이미지를 변화시킨다.
+/// </summary>
 
 public class GoldUIUpdate : MonoBehaviour
 {

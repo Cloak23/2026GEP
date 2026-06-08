@@ -1,26 +1,27 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 /// <summary>
 /// 2026.05.25
-/// ½Å¿ø¿µ
+/// ì‹ ì›ì˜
 /// 
-/// °ÔÀÓ ³»ÀÇ µ¥ÀÌÅÍ¸¦ ½Ì±ÛÅæÀ¸·Î Á¢±ÙÇÏ´Â ½ºÅ©¸³Æ®
+/// ê²Œì„ ë‚´ì˜ ë°ì´í„°ë¥¼ ì‹±ê¸€í†¤ìœ¼ë¡œ ì ‘ê·¼í•˜ëŠ” ìŠ¤í¬ë¦½íŠ¸
 /// 
-/// update 2026.05.26 : map generator¿Í ÇÕº´À¸·Î DataManager ³»ºÎÀÇ map »èÁ¦. ¸Ê µ¥ÀÌÅÍ´Â Renderer¿¡¼­ »ç¿ëÇÏ±â·Î ÇÔ.
+/// update 2026.05.26 : map generatorì™€ í•©ë³‘ìœ¼ë¡œ DataManager ë‚´ë¶€ì˜ map ì‚­ì œ. ë§µ ë°ì´í„°ëŠ” Rendererì—ì„œ ì‚¬ìš©í•˜ê¸°ë¡œ í•¨.
 /// </summary>
 
 public class DataManager : MonoBehaviour
 {
-    [Header("¿ÜºÎ ÄÄÆ÷³ÍÆ® ¿¬°á")]
+    [Header("ì™¸ë¶€ ì»´í¬ë„ŒíŠ¸ ì—°ê²°")]
     public MineMapGenerator m_Generator;
 
-    [Header("ÇÃ·¹ÀÌ¾î ½ºÅÈ")]
+    [Header("ìˆ˜ì¹˜ ë³€ê²½")]
     public int PLAYER_INIT_GOLD = 10;
     public int ROULETTE_MAX_GOLD = 70;
-    public int ROULETTE_MIN_GOLD = -20; 
+    public int ROULETTE_MIN_GOLD = -20;
+    public List<int> REQUIRE_GOLD_LIST;
 
     public static DataManager Instance { get; private set; }
 
@@ -75,7 +76,7 @@ public class DataManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogError("Bound Error : ÇÃ·¹ÀÌ¾î°¡ ¿µ¿ªÀ» ¹ş¾î³²");
+                    Debug.LogError("Bound Error : í”Œë ˆì´ì–´ê°€ ì˜ì—­ì„ ë²—ì–´ë‚¨");
                     e_pos_change?.Invoke(player_pos, player_pos);
                 }
             }
@@ -87,12 +88,12 @@ public class DataManager : MonoBehaviour
         m_Renderer = MineMapRenderer.Instance;
         game_manager = GameManager.Instance;
         game_manager.e_stage_start.AddListener(InitStage);
+        player_gold = PLAYER_INIT_GOLD;
     }
 
     public void InitStage()
     {
         PlayerPos = map.start;
-        PlayerGold = PLAYER_INIT_GOLD;
     }
 
     public void Move(Vector2Int dir)
@@ -123,7 +124,7 @@ public class DataManager : MonoBehaviour
         {
             currentTime += Time.deltaTime;
 
-            // ÇöÀç °æ°ú ½Ã°£À» ÀüÃ¼ ½Ã°£À¸·Î ³ª´©¾î 0~1 »çÀÌÀÇ ºñÀ²(t)À» ¸¸µì´Ï´Ù.
+            // í˜„ì¬ ê²½ê³¼ ì‹œê°„ì„ ì „ì²´ ì‹œê°„ìœ¼ë¡œ ë‚˜ëˆ„ì–´ 0~1 ì‚¬ì´ì˜ ë¹„ìœ¨(t)ì„ ë§Œë“­ë‹ˆë‹¤.
             float t = currentTime / duration;
 
             transform.position = Vector3.Lerp(old_pos, new_pos, t);
@@ -134,9 +135,9 @@ public class DataManager : MonoBehaviour
         transform.position = new_pos;
     }
 
-    // µğ¹ö±×¿ë
-    // ¼ıÀÚ¸ÊÀ» SlotData ¸ÊÀ¸·Î º¯È¯
-    // Generator¿Í ÇÕÄ£ ÀÌÈÄ·Ğ »ç¿ë X
+    // ë””ë²„ê·¸ìš©
+    // ìˆ«ìë§µì„ SlotData ë§µìœ¼ë¡œ ë³€í™˜
+    // Generatorì™€ í•©ì¹œ ì´í›„ë¡  ì‚¬ìš© X
     public SlotData[,] IntMapToSlotMap(int[,] input_map)
     {
         int width = input_map.GetLength(0);

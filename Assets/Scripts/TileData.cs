@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [System.Serializable]
 public class TileData
@@ -10,6 +10,7 @@ public class TileData
     public bool isStart = false;
     public bool isGoal = false;
     public bool isRevealed = false;
+    public bool isInteracted = false;
 
     public bool isFlagged = false;
 

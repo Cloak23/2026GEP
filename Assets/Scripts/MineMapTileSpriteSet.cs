@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -131,6 +131,11 @@ public class MineMapTileSpriteSet : ScriptableObject
             return revealMines ? mineTile : hiddenMineTile;
         }
 
+        if (tile.adjacentMineCount > 0)
+        {
+            return GetNumberTile(tile.adjacentMineCount);
+        }
+
         if (tile.hasItem)
         {
             return GetItemTile(tile.itemId);
@@ -141,10 +146,6 @@ public class MineMapTileSpriteSet : ScriptableObject
             return GetCoinTile(tile.tileCoin);
         }
 
-        if (tile.adjacentMineCount > 0)
-        {
-            return GetNumberTile(tile.adjacentMineCount);
-        }
 
         return null;
     }

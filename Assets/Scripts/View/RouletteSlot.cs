@@ -1,10 +1,18 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// 2026.05.31 신원영
+/// 룰렛의 각 슬롯에 랜덤한 값을 부여하는 스크립트. 
+/// 선택되면 골드를 변화시키고
+/// RouletteView를 안거친 채로 바로 나간다.
+/// </summary>
+
+
 public class RouletteSlot : MonoBehaviour
 {
-    [Header("�ܺ� ������Ʈ ����")]
+    [Header("외부 컴포넌트 연결")]
     public TextMeshProUGUI slot_text;
 
     public int gold_amount = 10;

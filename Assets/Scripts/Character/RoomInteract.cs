@@ -1,12 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
 /// 2026.05.26
-/// ½Å¿ø¿µ
+/// ì‹ ì›ì˜
 /// 
-/// ¹æ°ú »óÈ£ÀÛ¿ëÇÏ´Â ½ºÅ©¸³Æ®. ÀÓ½Ã·Î ·ëÃ¼Å© ±â´ÉÀº ºñÈ°¼ºÈ­ÇÔ.
+/// ë°©ê³¼ ìƒí˜¸ì‘ìš©í•˜ëŠ” ìŠ¤í¬ë¦½íŠ¸. ì„ì‹œë¡œ ë£¸ì²´í¬ ê¸°ëŠ¥ì€ ë¹„í™œì„±í™”í•¨.
+/// 
+/// 2026.06.09 ê±°ì˜ ì‚¬ìš©í•˜ì§€ ì•ŠëŠ” ìŠ¤í¬ë¦½íŠ¸ë¡œ ë³€í•¨. ëŒ€ë¶€ë¶„ì˜ ê¸°ëŠ¥ì— ì£¼ì„ì²˜ë¦¬ë¥¼ í–ˆê³ ,
+/// ê³¨ì¸ ì§€ì ì—ì„œ ìƒí˜¸ì‘ìš© í•˜ì—¬ ë‚˜ê°€ëŠ” ê²ƒì—ë§Œ ì‚¬ìš©í•¨.
 /// </summary>
 
 public class RoomInteract : MonoBehaviour
@@ -17,12 +18,14 @@ public class RoomInteract : MonoBehaviour
     {
         data = DataManager.Instance;
         game_manager = GameManager.Instance;
-        // ¼û°ÜÁø ¹æÀ» µå·¯³»´Â ±â´ÉÀº °¢ Ä­º° ·£´õ¸µ ±â´É Ãß°¡µÇ¸é Àû¿ë
+        // ìˆ¨ê²¨ì§„ ë°©ì„ ë“œëŸ¬ë‚´ëŠ” ê¸°ëŠ¥ì€ ê° ì¹¸ë³„ ëœë”ë§ ê¸°ëŠ¥ ì¶”ê°€ë˜ë©´ ì ìš©
         //data.e_pos_change.AddListener(RoomCheck);
     }
+
+    // ì‚¬ìš© X
     public void RoomCheck(Vector2Int old_pos, Vector2Int new_pos)
     {
-        // °ø°³ ¾ÈµÈ Ä­¸¸ Ã³¸®
+        // ê³µê°œ ì•ˆëœ ì¹¸ë§Œ ì²˜ë¦¬
         if (data.map.GetTile(new_pos).isRevealed) return;
     }
 
@@ -40,23 +43,23 @@ public class RoomInteract : MonoBehaviour
 
         TileData tile_data = data.map.GetTile(data.PlayerPos);
 
-        if (tile_data.isMine)
-        {
-            data.PlayerGold -= tile_data.tileCoin;
-        }
-        else if (tile_data.isGoal)
+        //if (tile_data.isMine)
+        //{
+        //    data.PlayerGold -= tile_data.tileCoin;
+        //}
+        if (tile_data.isGoal)
         {
             game_manager.EndStage();
         }
-        else if (tile_data.hasItem)
-        {
-            // 2026.05.26 ¾ÆÀÌÅÛ Ãß°¡´Â ±â´É ³ªÁß¿¡ Ãß°¡
-        }
-        else
-        {
-            Debug.Log("(" + tile_data.position.x + ", " + tile_data.position.y + ") : Coin Get " + tile_data.tileCoin);
-            data.PlayerGold += tile_data.tileCoin;
-        }
+        //else if (tile_data.hasItem)
+        //{
+        //    // 2026.05.26 ì•„ì´í…œ ì¶”ê°€ëŠ” ê¸°ëŠ¥ ë‚˜ì¤‘ì— ì¶”ê°€
+        //}
+        //else
+        //{
+        //    Debug.Log("(" + tile_data.position.x + ", " + tile_data.position.y + ") : Coin Get " + tile_data.tileCoin);
+        //    data.PlayerGold += tile_data.tileCoin;
+        //}
         
     }
 }

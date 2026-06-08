@@ -1,8 +1,14 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
+/// <summary>
+/// 2026.06.07 신원영
+/// RouletteView 외의 것들을 이용하려는 스크립트.
+/// 선택지 버튼을 관리하여 룰렛을 시작하는 것과 안전한 선택지로 10G를 받아가도록 한다.
+/// </summary>
 
 public class RouletteManager : MonoBehaviour
 {

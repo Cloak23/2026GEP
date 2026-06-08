@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+﻿using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -68,20 +68,32 @@ public class TileRevealByTouch : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 2026.06.09 신원영
+    /// 타일이 공개되었을 때 상호작용 하는 기능 추가 및 완성
+    /// </summary>
+
     public void ActiveTile()
     {
+        if (myLogicalTile.isInteracted)
+        {
+            return;
+        }
         if (myLogicalTile.isMine)
         {
-            
-        }
-        else if (myLogicalTile.isGoal)
-        {
-            SceneManager.LoadSceneAsync("Goal", LoadSceneMode.Additive);
+            DataManager.Instance.PlayerGold -= myLogicalTile.tileCoin;
+            DataManager.Instance.map.tiles[myLogicalTile.position.x, myLogicalTile.position.y].isInteracted = true;
         }
         else if (myLogicalTile.hasItem)
         {
             DataManager.Instance.e_roulette_start.Invoke();
+            DataManager.Instance.map.tiles[myLogicalTile.position.x, myLogicalTile.position.y].isInteracted = true;
             SceneManager.LoadSceneAsync("Roulette", LoadSceneMode.Additive);
+        }
+        else
+        {
+            DataManager.Instance.PlayerGold += myLogicalTile.tileCoin;
+            DataManager.Instance.map.tiles[myLogicalTile.position.x, myLogicalTile.position.y].isInteracted = true;
         }
     }
 }
