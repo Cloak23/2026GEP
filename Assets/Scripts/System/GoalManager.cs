@@ -53,6 +53,7 @@ public class GoalManager : MonoBehaviour
     void Pass()
     {
         data.PlayerGold -= require_gold;
+        data.PlayerLife += 5;
         m_game.StageStart();
         SceneManager.UnloadSceneAsync("Goal");
     }
@@ -60,6 +61,8 @@ public class GoalManager : MonoBehaviour
     void Fail()
     {
         m_game.e_game_over.Invoke();
+        data.PlayerLife += 1;
         SceneManager.UnloadSceneAsync("Goal");
+        SceneManager.LoadScene("Item");
     }
 }

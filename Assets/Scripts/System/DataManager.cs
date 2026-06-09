@@ -26,10 +26,12 @@ public class DataManager : MonoBehaviour
 
     [Header("상점 업그레이드 레벨")]
     public int level_revival = 0;   // 부활 레벨
-    public int level_opentile = 0;  // 타일 오픈 레벨
+    public int level_roulette_bonus = 0;  // 타일 오픈 레벨
     public int level_AIrequest = 0; // AI 요청 레벨
 
-
+    public int current_revival_count = 0;
+    public int current_roulette_bonus_count = 0;
+    public int current_AIrequest_count = 0;
 
     public static DataManager Instance { get; private set; }
 
@@ -128,9 +130,9 @@ public class DataManager : MonoBehaviour
 
         if (m_Generator != null)
         {
-            m_Generator.revivalLevel = this.level_revival;
-            m_Generator.openTileLevel = this.level_opentile;
-            m_Generator.AIrequestLevel = this.level_AIrequest;
+            current_revival_count = level_revival;
+            current_roulette_bonus_count = level_roulette_bonus;
+            current_AIrequest_count = level_AIrequest;
 
             Debug.Log($"[InitStage] 레벨 데이터 전달 완료: {level_revival}");
         }
@@ -180,10 +182,31 @@ public class DataManager : MonoBehaviour
 
     private void GameOver()
     {
+        Debug.Log($"[GameOver] 체크! 남은 부활 횟수: {current_revival_count}");
+
+        if (current_revival_count > 0)
+        {
+            current_revival_count--; // 이번 판의 기회만 차감
+            PlayerGold = 10;         // 부활!
+            Debug.Log($"부활 성공! 남은 기회: {current_revival_count}");
+            return;
+        }
+
         Debug.Log("게임 오버!");
         AddLife(1);
         SceneManager.LoadScene("GameOver");
     }
+
+    public void UseAIQuestion()
+    {
+        if (DataManager.Instance.current_AIrequest_count > 0)
+        {
+            DataManager.Instance.current_AIrequest_count--; // 토큰 차감
+
+        }
+    }
+
+
 
     // 디버그용
     // 숫자맵을 SlotData 맵으로 변환

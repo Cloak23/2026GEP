@@ -30,7 +30,7 @@ public class ShopUIManager : MonoBehaviour
     private void Start() {
 
         revival.currentlevel = DataManager.Instance.level_revival;
-        opentile.currentlevel = DataManager.Instance.level_opentile;
+        opentile.currentlevel = DataManager.Instance.level_roulette_bonus;
         AIrequest.currentlevel = DataManager.Instance.level_AIrequest;
 
         revival.lvbutton.onClick.AddListener(() => TryUpgrade(revival));
@@ -56,7 +56,7 @@ public class ShopUIManager : MonoBehaviour
             item.currentlevel++;
 
             if (item == revival) DataManager.Instance.level_revival = item.currentlevel;
-            else if (item == opentile) DataManager.Instance.level_opentile = item.currentlevel;
+            else if (item == opentile) DataManager.Instance.level_roulette_bonus = item.currentlevel;
             else if (item == AIrequest) DataManager.Instance.level_AIrequest = item.currentlevel;
 
             UpdateAllUI();

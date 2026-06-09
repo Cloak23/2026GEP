@@ -17,6 +17,8 @@ public class AIManager : MonoBehaviour
     public TMP_Text responseText;
     public Button askButton;              // 질문 전송 버튼
     public Button closeButton;            // 창 닫기 버튼
+    public TMP_Text tokenCountText;
+
 
     private bool isWaitingForAi = false;
     private float lastRequestTime = -999f;
@@ -57,7 +59,8 @@ public class AIManager : MonoBehaviour
         if (aiWindowPanel != null)
         {
             aiWindowPanel.SetActive(true);
-            windowOpen = true; 
+            windowOpen = true;
+            UpdateTokenUI(); // 💡 창을 열 때 현재 토큰 수를 업데이트!
         }
     }
 
@@ -68,6 +71,15 @@ public class AIManager : MonoBehaviour
         {
             aiWindowPanel.SetActive(false);
             windowOpen = false; 
+        }
+    }
+
+
+    private void UpdateTokenUI()
+    {
+        if (tokenCountText != null)
+        {
+            tokenCountText.text = $"남은 질문 기회: {DataManager.Instance.current_AIrequest_count}";
         }
     }
 
@@ -119,6 +131,13 @@ public class AIManager : MonoBehaviour
     // AI 요청 시작 함수
     public void RequestAiHint()
     {
+
+        if (DataManager.Instance.current_AIrequest_count <= 0)
+        {
+            responseText.text = "AI 질문 토큰이 부족합니다!";
+            return;
+        }
+
         if (isWaitingForAi) return;
         if (Time.time - lastRequestTime < cooldownDuration)
         {
@@ -163,6 +182,10 @@ public class AIManager : MonoBehaviour
 
             if (www.result == UnityWebRequest.Result.Success)
             {
+                DataManager.Instance.current_AIrequest_count--;
+                UpdateTokenUI();
+         
+
                 responseText.text = www.downloadHandler.text;
             }
             else
