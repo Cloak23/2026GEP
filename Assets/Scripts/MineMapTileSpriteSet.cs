@@ -8,6 +8,7 @@ public class MineMapTileSpriteSet : ScriptableObject
     [Header("Wall Shape Tiles")]
     [Tooltip("No wall lines in this cell.")]
     public TileBase noWallTile;
+    public TileBase noWallTile2;
     [Tooltip("Passage cell between left and right rooms. Use the horizontal corridor tile.")]
     public TileBase passageHorizontalTile;
     [Tooltip("Passage cell between top and bottom rooms. Use the vertical corridor tile.")]

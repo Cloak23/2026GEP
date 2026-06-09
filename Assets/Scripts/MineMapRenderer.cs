@@ -344,7 +344,9 @@ public class MineMapRenderer : MonoBehaviour
             for (int y = 0; y < mapData.height; y++)
             {
                 Vector2Int mapPosition = new Vector2Int(x, y);
-                TileBase roomTile = tileSet.GetWallShapeTile(WallMask.None);
+                TileBase roomTile = y == mapData.height - 1 && tileSet.noWallTile2 != null
+                    ? tileSet.noWallTile2
+                    : tileSet.GetWallShapeTile(WallMask.None);
 
                 if (roomTile != null)
                 {

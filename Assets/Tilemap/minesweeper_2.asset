@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: minesweeper_2
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 1368390802, guid: b766ead2bf54de045a8d5beb0af6367e, type: 3}
+  m_Sprite: {fileID: 358890125, guid: bcfe307de36150f4883be12540be4550, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

@@ -12,40 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1e124486a8e6c040a534ab477d7cb2f, type: 3}
   m_Name: MineMapTileSpriteSet
   m_EditorClassIdentifier: 
-  noWallTile: {fileID: 11400000, guid: 9766577ffc21a3643ae5dd5b3f574e8b, type: 2}
-  passageHorizontalTile: {fileID: 11400000, guid: ef52f40e811a8f34f8f0300c373a83c3, type: 2}
-  passageVerticalTile: {fileID: 11400000, guid: f2aed37112a1aed40b6aa510ba1792cb, type: 2}
-  wallTopTile: {fileID: 11400000, guid: f2bdf7912bc74ed498009ea70cc27638, type: 2}
-  wallRightTile: {fileID: 11400000, guid: 8d3869e83b99dd2459f044d78b837e0d, type: 2}
-  wallBottomTile: {fileID: 11400000, guid: 2ba241d859dd5384fabc357d65bff2fa, type: 2}
-  wallLeftTile: {fileID: 11400000, guid: 12bc78cd170bb12458921cd6cf5460e5, type: 2}
-  wallTopRightTile: {fileID: 11400000, guid: c1f14a3c3c77a86479a8bb639050e29e, type: 2}
-  wallRightBottomTile: {fileID: 11400000, guid: 43daa81407dc71d43aac58a93d525e7c, type: 2}
-  wallBottomLeftTile: {fileID: 11400000, guid: acfcd02d9b1338244a0c0fcdd80ad190, type: 2}
-  wallLeftTopTile: {fileID: 11400000, guid: 0088124a4f765664693d892f12d22c13, type: 2}
-  wallTopBottomTile: {fileID: 11400000, guid: ef52f40e811a8f34f8f0300c373a83c3, type: 2}
-  wallLeftRightTile: {fileID: 11400000, guid: f2aed37112a1aed40b6aa510ba1792cb, type: 2}
-  wallLeftRightBottomTile: {fileID: 11400000, guid: 481ad5b6cf158c742b825760db18612d, type: 2}
-  wallTopRightBottomTile: {fileID: 11400000, guid: 80c9ccf12b761f14cb69df62680f181f, type: 2}
-  wallLeftTopRightTile: {fileID: 11400000, guid: 05bc5f8d6b9ae24469e0a23570d2d17a, type: 2}
-  wallTopBottomLeftTile: {fileID: 11400000, guid: 7c63313ebf64371439c4bf2e8eb8bc67, type: 2}
-  wallAllTile: {fileID: 11400000, guid: 348fa4d168c978343a2272ebef8e1ff6, type: 2}
-  startTile: {fileID: 11400000, guid: 5bbba1cb1e371c848a52f087f6ab6862, type: 2}
-  goalTile: {fileID: 11400000, guid: a83ea0b7a41813a4196d6ecc27432bc3, type: 2}
-  mineTile: {fileID: 11400000, guid: 579c21fcda64f204a904b3fa3084caca, type: 2}
+  noWallTile: {fileID: 11400000, guid: e1a89b5a3b5d2bd46b0c99f118f59c9b, type: 2}
+  noWallTile2: {fileID: 11400000, guid: b72823790e7581f41ab37ee96fb34cd6, type: 2}
+  passageHorizontalTile: {fileID: 11400000, guid: 93b0d4c7ad9aeb74caf6a09cda800c73, type: 2}
+  passageVerticalTile: {fileID: 11400000, guid: 2b8c5ed43eaf63b42a8748146006a790, type: 2}
+  wallTopTile: {fileID: 11400000, guid: 7297bf21298efb7409918ad71cc3437c, type: 2}
+  wallRightTile: {fileID: 11400000, guid: be9aae1720db221489eadadb49013d59, type: 2}
+  wallBottomTile: {fileID: 11400000, guid: 9df89ff94512c8b42aa0627c6c209fee, type: 2}
+  wallLeftTile: {fileID: 11400000, guid: 31b75ae4ff8ad614a9023e421908042f, type: 2}
+  wallTopRightTile: {fileID: 11400000, guid: 1da8520174a54254499bf290634bd755, type: 2}
+  wallRightBottomTile: {fileID: 11400000, guid: 5c9f672bcfd1af344b4a0ed23e9a57cd, type: 2}
+  wallBottomLeftTile: {fileID: 11400000, guid: 42898504b32c36d4e95a237fab15aede, type: 2}
+  wallLeftTopTile: {fileID: 11400000, guid: 891dbc6397c0b9e489a1cd6836bb861e, type: 2}
+  wallTopBottomTile: {fileID: 11400000, guid: 2b8c5ed43eaf63b42a8748146006a790, type: 2}
+  wallLeftRightTile: {fileID: 11400000, guid: 93b0d4c7ad9aeb74caf6a09cda800c73, type: 2}
+  wallLeftRightBottomTile: {fileID: 11400000, guid: 4eb97038e31edc4419995361d9997d03, type: 2}
+  wallTopRightBottomTile: {fileID: 11400000, guid: 3586ea822b6cf6248965ec300e8ce19a, type: 2}
+  wallLeftTopRightTile: {fileID: 11400000, guid: f0554dfc26290224190940c98f48b417, type: 2}
+  wallTopBottomLeftTile: {fileID: 11400000, guid: fa1f4d5e6a7fb9047801e19aa3de7443, type: 2}
+  wallAllTile: {fileID: 11400000, guid: 9321fde70ce211a478a2b2f4d14a5d7e, type: 2}
+  startTile: {fileID: 11400000, guid: 7313cd90dbf344245ba4203057b96988, type: 2}
+  goalTile: {fileID: 11400000, guid: 01b597f80b63a3845ae3828cb9e55b7a, type: 2}
+  mineTile: {fileID: 11400000, guid: 5ef308f4c005b074b9ff5b88639c5766, type: 2}
   hiddenMineTile: {fileID: 11400000, guid: 579c21fcda64f204a904b3fa3084caca, type: 2}
-  coverTile: {fileID: 11400000, guid: fd30f025a6aa7d248bf525f01eae0947, type: 2}
+  coverTile: {fileID: 11400000, guid: 9d880689f7f494a4ea31f5958ca2895b, type: 2}
   safePathDebugTile: {fileID: 11400000, guid: 5fa981e90060692479647aac21069956, type: 2}
   numberTiles:
   - {fileID: 0}
-  - {fileID: 11400000, guid: 25e6e95d03ea40542947267a123f8081, type: 2}
-  - {fileID: 11400000, guid: 4524de7382172f940be94cc7a8b000a7, type: 2}
-  - {fileID: 11400000, guid: b2373be10f0970549bf2929971aada98, type: 2}
-  - {fileID: 11400000, guid: 0ce7c5b88636a5140b618f517c119ef1, type: 2}
-  - {fileID: 11400000, guid: 3e76ea386f0779c4883a846654011357, type: 2}
-  - {fileID: 11400000, guid: d6c709821ce4a7343aa08155ec666eeb, type: 2}
-  - {fileID: 11400000, guid: d9336ce91c0c6e74eb7163a34f3cb861, type: 2}
-  - {fileID: 11400000, guid: 995ba5bb3806860429a02ce125cc9da4, type: 2}
+  - {fileID: 11400000, guid: 62fa91fabca11a041beaa84b1adf25e4, type: 2}
+  - {fileID: 11400000, guid: e7e42487a6327c647b4c077e38ebb1e3, type: 2}
+  - {fileID: 11400000, guid: 0b1c72df5308c4643bfdd0aaf2dd8046, type: 2}
+  - {fileID: 11400000, guid: bac26ea511de3f64dab86604db721425, type: 2}
+  - {fileID: 11400000, guid: 19fa02fff318bc7419b75f685c42d500, type: 2}
+  - {fileID: 11400000, guid: 2a3ad3cc862682044a844d0c426efef7, type: 2}
+  - {fileID: 11400000, guid: 8e9f1f09a70db1e4d9ab03c545aff1a9, type: 2}
+  - {fileID: 11400000, guid: 3f7def4a593d07e46bcb4412dd51c8e6, type: 2}
   coinTile: {fileID: 11400000, guid: 755b964f426e8494aa8a7d386a2b3874, type: 2}
   coinAmountTiles: []
   defaultItemTile: {fileID: 11400000, guid: 531127d1ca4a76a47b44d3064442c146, type: 2}

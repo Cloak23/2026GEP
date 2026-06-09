@@ -3592,7 +3592,7 @@ MonoBehaviour:
   clearBeforeRender: 1
   revealMines: 1
   connectAllAdjacentRooms: 1
-  showSafePathDebug: 1
+  showSafePathDebug: 0
   showSafePathConnections: 1
   coverMapOnRender: 0
   coverWholeMap: 0
