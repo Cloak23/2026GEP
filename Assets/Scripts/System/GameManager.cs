@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Debug.Log("Start 실행됨!");
-        InitializeGame();
+        Invoke("InitializeGame", 0.1f);
     }
 
     private void InitializeGame()
@@ -140,4 +140,10 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+
+
+
+
+
 }

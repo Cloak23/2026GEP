@@ -2965,9 +2965,9 @@ MonoBehaviour:
   ROULETTE_MAX_GOLD: 70
   ROULETTE_MIN_GOLD: -20
   REQUIRE_GOLD_LIST: 64000000c80000009001000020030000e8030000b80b000088130000581b0000401f000010270000
-  level_revival: 1
-  level_roulette_bonus: 1
-  level_AIrequest: 5
+  level_revival: 0
+  level_roulette_bonus: 0
+  level_AIrequest: 0
   current_revival_count: 0
   current_roulette_bonus_count: 0
   current_AIrequest_count: 0

@@ -24,7 +24,8 @@ public class RouletteManager : MonoBehaviour
         roulette_button.onClick.RemoveAllListeners();
 
         safe_button.onClick.AddListener(SafeReward);
-        roulette_button.onClick.AddListener(RouletteStart);
+        //roulette_button.onClick.AddListener(RouletteStart);
+        roulette_button.onClick.AddListener(() => StartCoroutine(RouletteSequenceRoutine()));
     }
 
     void SafeReward()
@@ -33,11 +34,37 @@ public class RouletteManager : MonoBehaviour
         DataManager.Instance.e_roulette_end.Invoke();
         SceneManager.UnloadSceneAsync("Roulette");
     }
-    void RouletteStart()
+    /*void RouletteStart()
     {
         safe_button.gameObject.SetActive(false);
         roulette_button.gameObject.SetActive(false);
         roulette.SetActive(true);
         roulette_script.ClickSpinButton();
+    }*/
+
+    private IEnumerator RouletteSequenceRoutine()
+    {
+        safe_button.gameObject.SetActive(false);
+        roulette_button.gameObject.SetActive(false);
+        roulette.SetActive(true);
+
+        int totalSpins = 1 + DataManager.Instance.current_roulette_bonus_count;
+
+        for (int i = 0; i < totalSpins; i++)
+        {
+            // 1. 여기서 슬롯을 생성 (루프 내에서 1회씩)
+            roulette_script.ArrangeRoulette();
+
+            // 2. 룰렛 회전 (완료까지 기다림)
+            int targetIndex = Random.Range(0, 16); // 슬롯 개수만큼 타겟 설정
+            yield return StartCoroutine(roulette_script.SpinRoulette(targetIndex));
+
+            // 3. 결과 반영 후 잠깐 대기 (결과 확인 시간)
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        DataManager.Instance.e_roulette_end.Invoke();
+        SceneManager.UnloadSceneAsync("Roulette");
     }
+
 }
