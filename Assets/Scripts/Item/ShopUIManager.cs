@@ -9,8 +9,8 @@ public class ShopUIManager : MonoBehaviour
     public int currentlife = 100; //죽은 횟수 누적되어야함
     public TMP_Text lifetext;
 
-    public Color activelevel = new Color(1f, 0.8f, 0f);
-    public Color levelinactive = Color.white;
+    public Color activelevel = new Color(1, 1, 1, 1);
+    public Color levelinactive = new Color(1, 1, 1, 0);
 
     [System.Serializable]
     public class Items { 

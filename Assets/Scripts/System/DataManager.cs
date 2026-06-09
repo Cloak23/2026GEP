@@ -39,6 +39,7 @@ public class DataManager : MonoBehaviour
     public UnityEvent<int, int> e_gold_change = new();
     public UnityEvent e_roulette_start = new();
     public UnityEvent e_roulette_end = new();
+    public UnityEvent e_revival;
 
     private int player_gold = 10;
     private Vector2Int player_pos = new Vector2Int(0, 0);
@@ -186,6 +187,7 @@ public class DataManager : MonoBehaviour
         {
             current_revival_count--;
             PlayerGold = 10;
+            e_revival?.Invoke();
             return;
         }
 

@@ -31,7 +31,6 @@ public class RouletteSlot : MonoBehaviour
         if(data != null)
         {
             data.PlayerGold += gold_amount;
-            data.e_roulette_end.Invoke();
             //SceneManager.UnloadSceneAsync("Roulette");
         }
         else
