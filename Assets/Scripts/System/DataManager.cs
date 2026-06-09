@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 2026.05.25
@@ -22,6 +23,13 @@ public class DataManager : MonoBehaviour
     public int ROULETTE_MAX_GOLD = 70;
     public int ROULETTE_MIN_GOLD = -20;
     public List<int> REQUIRE_GOLD_LIST;
+
+    [Header("상점 업그레이드 레벨")]
+    public int level_revival = 0;   // 부활 레벨
+    public int level_opentile = 0;  // 타일 오픈 레벨
+    public int level_AIrequest = 0; // AI 요청 레벨
+
+
 
     public static DataManager Instance { get; private set; }
 
@@ -55,8 +63,31 @@ public class DataManager : MonoBehaviour
             player_gold = value;
 
             e_gold_change?.Invoke(old_gold, value);
+
+            if (player_gold <= 0)
+            {
+                GameOver();
+            }
+
         }
     }
+
+    private int player_life = 0;
+    public int PlayerLife 
+    {
+        get => player_life;
+        set
+        {
+            player_life = value;
+        }
+    }
+
+    public void AddLife(int amount)
+    {
+        player_life += amount;
+        Debug.Log("사망! 현재 누적 라이프: " + player_life);
+    }
+
 
     public Vector2Int PlayerPos
     {
@@ -93,7 +124,19 @@ public class DataManager : MonoBehaviour
 
     public void InitStage()
     {
+        if (m_Generator == null) m_Generator = FindObjectOfType<MineMapGenerator>();
+
+        if (m_Generator != null)
+        {
+            m_Generator.revivalLevel = this.level_revival;
+            m_Generator.openTileLevel = this.level_opentile;
+            m_Generator.AIrequestLevel = this.level_AIrequest;
+
+            Debug.Log($"[InitStage] 레벨 데이터 전달 완료: {level_revival}");
+        }
+
         PlayerPos = map.start;
+        PlayerGold = PLAYER_INIT_GOLD;
     }
 
     public void Move(Vector2Int dir)
@@ -133,6 +176,13 @@ public class DataManager : MonoBehaviour
         }
 
         transform.position = new_pos;
+    }
+
+    private void GameOver()
+    {
+        Debug.Log("게임 오버!");
+        AddLife(1);
+        SceneManager.LoadScene("GameOver");
     }
 
     // 디버그용

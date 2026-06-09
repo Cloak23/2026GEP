@@ -28,6 +28,11 @@ public class ShopUIManager : MonoBehaviour
     public Items AIrequest;
 
     private void Start() {
+
+        revival.currentlevel = DataManager.Instance.level_revival;
+        opentile.currentlevel = DataManager.Instance.level_opentile;
+        AIrequest.currentlevel = DataManager.Instance.level_AIrequest;
+
         revival.lvbutton.onClick.AddListener(() => TryUpgrade(revival));
         opentile.lvbutton.onClick.AddListener(() => TryUpgrade(opentile));
         AIrequest.lvbutton.onClick.AddListener(() => TryUpgrade(AIrequest));
@@ -45,12 +50,16 @@ public class ShopUIManager : MonoBehaviour
 
         int cost = item.upgradecosts[item.currentlevel];
 
-        if (currentlife >= cost)
+        if (DataManager.Instance.PlayerLife >= cost)
         {
-            currentlife -= cost; 
-            item.currentlevel++; 
+            DataManager.Instance.PlayerLife -= cost; // 차감
+            item.currentlevel++;
 
-            UpdateAllUI(); 
+            if (item == revival) DataManager.Instance.level_revival = item.currentlevel;
+            else if (item == opentile) DataManager.Instance.level_opentile = item.currentlevel;
+            else if (item == AIrequest) DataManager.Instance.level_AIrequest = item.currentlevel;
+
+            UpdateAllUI();
         }
     }
 
@@ -58,7 +67,7 @@ public class ShopUIManager : MonoBehaviour
     {
         if (lifetext != null)
         {
-            lifetext.text = "LIFE : " + currentlife.ToString();
+            lifetext.text = "LIFE : " + DataManager.Instance.PlayerLife.ToString();
         }
 
         RefreshItemUI(revival);

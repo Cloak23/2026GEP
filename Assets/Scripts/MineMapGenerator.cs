@@ -6,16 +6,16 @@ using Random = UnityEngine.Random;
 public class MineMapGenerator : MonoBehaviour
 {
     [Header("Map")]
-    public int width = 16; // 맵 가로 크기
-    public int height = 16; // 맵 세로 크기
-    public int floorIndex = 0; // 맵 층 수
+    public int width = 16;
+    public int height = 16;
+    public int floorIndex = 0;
     public int margin = 2;
     public int maxGenerationAttempts = 100;
 
     [Header("Floor Link")]
     public bool usePreviousGoal = false;
     public Vector2Int previousGoal;
-    public int startJitterRange = 2; // start 위치 살짝 흔듦
+    public int startJitterRange = 2;
 
     [Header("Start / Goal")]
     public int minStartGoalDistance = 14;
@@ -47,6 +47,9 @@ public class MineMapGenerator : MonoBehaviour
     public bool generateOnStart = false;
     public bool logDebugMapOnStart = true;
 
+    public int revivalLevel;
+    public int openTileLevel;
+    public int AIrequestLevel;
     public MineMapData LastGeneratedMap { get; private set; }
 
     private IMineCountCalculator mineCountCalculator;
@@ -54,14 +57,9 @@ public class MineMapGenerator : MonoBehaviour
 
     private static readonly Vector2Int[] EightDirections =
     {
-        new Vector2Int(-1, -1),
-        new Vector2Int(0, -1),
-        new Vector2Int(1, -1),
-        new Vector2Int(-1, 0),
-        new Vector2Int(1, 0),
-        new Vector2Int(-1, 1),
-        new Vector2Int(0, 1),
-        new Vector2Int(1, 1)
+        new Vector2Int(-1, -1), new Vector2Int(0, -1), new Vector2Int(1, -1),
+        new Vector2Int(-1, 0), new Vector2Int(1, 0), new Vector2Int(-1, 1),
+        new Vector2Int(0, 1), new Vector2Int(1, 1)
     };
 
     private void Awake()
@@ -71,17 +69,9 @@ public class MineMapGenerator : MonoBehaviour
 
     private void Start()
     {
-        if (!generateOnStart)
-        {
-            return;
-        }
-
+        if (!generateOnStart) return;
         LastGeneratedMap = GenerateMap();
-
-        if (logDebugMapOnStart)
-        {
-            LastGeneratedMap.LogDebugMap();
-        }
+        if (logDebugMapOnStart) LastGeneratedMap.LogDebugMap();
     }
 
     public MineMapData GenerateMap()
@@ -98,7 +88,6 @@ public class MineMapGenerator : MonoBehaviour
         for (int attempt = 1; attempt <= maxGenerationAttempts; attempt++)
         {
             MineMapData mapData = CreateEmptyMap(targetFloorIndex);
-
             mapData.start = CreateStartPosition(targetFloorIndex, linkedPreviousGoal);
             mapData.goal = CreateGoalPosition(mapData.start);
             mapData.waypoints = CreateWaypoints(mapData.start, mapData.goal);
@@ -115,15 +104,7 @@ public class MineMapGenerator : MonoBehaviour
                 return mapData;
             }
         }
-
         throw new InvalidOperationException($"Failed to generate a valid mine map after {maxGenerationAttempts} attempts.");
-    }
-
-    [ContextMenu("Generate Map And Log Debug")]
-    public void GenerateMapAndLogDebug()
-    {
-        MineMapData mapData = GenerateMap();
-        mapData.LogDebugMap();
     }
 
     public void SetMineCountCalculator(IMineCountCalculator calculator)
@@ -154,7 +135,6 @@ public class MineMapGenerator : MonoBehaviour
     private MineMapData CreateEmptyMap(int targetFloorIndex)
     {
         MineMapData mapData = new MineMapData(width, height, targetFloorIndex);
-
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -162,7 +142,6 @@ public class MineMapGenerator : MonoBehaviour
                 mapData.tiles[x, y] = new TileData(new Vector2Int(x, y));
             }
         }
-
         return mapData;
     }
 
@@ -170,78 +149,42 @@ public class MineMapGenerator : MonoBehaviour
     {
         if (targetFloorIndex > 0 && linkedPreviousGoal.HasValue)
         {
-            Vector2Int jitter = new Vector2Int(
-                Random.Range(-startJitterRange, startJitterRange + 1),
-                Random.Range(-startJitterRange, startJitterRange + 1));
-
+            Vector2Int jitter = new Vector2Int(Random.Range(-startJitterRange, startJitterRange + 1), Random.Range(-startJitterRange, startJitterRange + 1));
             return ClampToPlayableArea(linkedPreviousGoal.Value + jitter);
         }
-
-        int minX = PlayableMinX;
-        int maxX = Mathf.Min(PlayableMaxX, Mathf.Max(PlayableMinX, Mathf.FloorToInt(width * 0.33f)));
-        int minY = Mathf.Max(PlayableMinY, Mathf.CeilToInt(height * 0.66f));
-        int maxY = PlayableMaxY;
-
-        if (minY > maxY)
-        {
-            minY = PlayableMinY;
-        }
-
+        int minX = PlayableMinX, maxX = Mathf.Min(PlayableMaxX, Mathf.Max(PlayableMinX, Mathf.FloorToInt(width * 0.33f)));
+        int minY = Mathf.Max(PlayableMinY, Mathf.CeilToInt(height * 0.66f)), maxY = PlayableMaxY;
+        if (minY > maxY) minY = PlayableMinY;
         return RandomPoint(minX, maxX, minY, maxY);
     }
 
     private Vector2Int CreateGoalPosition(Vector2Int start)
     {
-        if (TryCreateDirectionalGoal(start, out Vector2Int goal))
-        {
-            return goal;
-        }
-
+        if (TryCreateDirectionalGoal(start, out Vector2Int goal)) return goal;
         List<Vector2Int> candidates = new List<Vector2Int>();
-
         for (int x = PlayableMinX; x <= PlayableMaxX; x++)
-        {
             for (int y = PlayableMinY; y <= PlayableMaxY; y++)
-            {
-                Vector2Int position = new Vector2Int(x, y);
-
-                if (ManhattanDistance(start, position) >= EffectiveMinStartGoalDistance)
-                {
-                    candidates.Add(position);
-                }
-            }
-        }
-
-        if (candidates.Count > 0)
-        {
-            return candidates[Random.Range(0, candidates.Count)];
-        }
-
-        return FarthestPlayablePointFrom(start);
+                if (ManhattanDistance(start, new Vector2Int(x, y)) >= EffectiveMinStartGoalDistance)
+                    candidates.Add(new Vector2Int(x, y));
+        return candidates.Count > 0 ? candidates[Random.Range(0, candidates.Count)] : FarthestPlayablePointFrom(start);
     }
 
     private bool TryCreateDirectionalGoal(Vector2Int start, out Vector2Int goal)
     {
         int minDistance = EffectiveMinStartGoalDistance;
         int maxStep = Mathf.Max(width, height);
-
         for (int i = 0; i < goalDirectionAttempts; i++)
         {
             Vector2Int direction = EightDirections[Random.Range(0, EightDirections.Length)];
             int step = Random.Range(Mathf.Max(1, minDistance / 2), maxStep + 1);
-            Vector2Int jitter = new Vector2Int(
-                Random.Range(-goalJitterRange, goalJitterRange + 1),
-                Random.Range(-goalJitterRange, goalJitterRange + 1));
-
+            Vector2Int jitter = new Vector2Int(Random.Range(-goalJitterRange, goalJitterRange + 1), Random.Range(-goalJitterRange, goalJitterRange + 1));
             Vector2Int candidate = ClampToPlayableArea(start + direction * step + jitter);
-
             if (candidate != start && ManhattanDistance(start, candidate) >= minDistance)
             {
                 goal = candidate;
                 return true;
             }
         }
-
         goal = default;
         return false;
     }
@@ -250,25 +193,14 @@ public class MineMapGenerator : MonoBehaviour
     {
         List<Vector2Int> waypoints = new List<Vector2Int>();
         int waypointCount = Random.Range(minWaypointCount, maxWaypointCount + 1);
-
         for (int i = 1; i <= waypointCount; i++)
         {
             float t = i / (float)(waypointCount + 1);
-            int x = Mathf.RoundToInt(Mathf.Lerp(start.x, goal.x, t));
-            int y = Mathf.RoundToInt(Mathf.Lerp(start.y, goal.y, t));
-
-            Vector2Int jitter = new Vector2Int(
-                Random.Range(-waypointJitterRange, waypointJitterRange + 1),
-                Random.Range(-waypointJitterRange, waypointJitterRange + 1));
-
-            Vector2Int waypoint = ClampToPlayableArea(new Vector2Int(x, y) + jitter);
-
-            if (waypoint != start && waypoint != goal && !waypoints.Contains(waypoint))
-            {
-                waypoints.Add(waypoint);
-            }
+            Vector2Int pos = new Vector2Int(Mathf.RoundToInt(Mathf.Lerp(start.x, goal.x, t)), Mathf.RoundToInt(Mathf.Lerp(start.y, goal.y, t)));
+            Vector2Int jitter = new Vector2Int(Random.Range(-waypointJitterRange, waypointJitterRange + 1), Random.Range(-waypointJitterRange, waypointJitterRange + 1));
+            Vector2Int waypoint = ClampToPlayableArea(pos + jitter);
+            if (waypoint != start && waypoint != goal && !waypoints.Contains(waypoint)) waypoints.Add(waypoint);
         }
-
         return waypoints;
     }
 
@@ -276,16 +208,9 @@ public class MineMapGenerator : MonoBehaviour
     {
         List<Vector2Int> safePath = new List<Vector2Int>();
         HashSet<Vector2Int> added = new HashSet<Vector2Int>();
-
         Vector2Int current = start;
         AddPathPosition(safePath, added, current);
-
-        for (int i = 0; i < waypoints.Count; i++)
-        {
-            AddSegmentPath(safePath, added, current, waypoints[i]);
-            current = waypoints[i];
-        }
-
+        foreach (var wp in waypoints) { AddSegmentPath(safePath, added, current, wp); current = wp; }
         AddSegmentPath(safePath, added, current, goal);
         return safePath;
     }
@@ -293,51 +218,27 @@ public class MineMapGenerator : MonoBehaviour
     private void AddSegmentPath(List<Vector2Int> safePath, HashSet<Vector2Int> added, Vector2Int from, Vector2Int to)
     {
         Vector2Int current = from;
-
         while (current != to)
         {
-            bool canMoveX = current.x != to.x;
-            bool canMoveY = current.y != to.y;
-            bool moveX = canMoveX && (!canMoveY || Random.value < 0.5f);
-
-            if (moveX)
-            {
-                current.x += Math.Sign(to.x - current.x);
-            }
-            else if (canMoveY)
-            {
-                current.y += Math.Sign(to.y - current.y);
-            }
-
+            bool moveX = (current.x != to.x) && ((current.y == to.y) || Random.value < 0.5f);
+            if (moveX) current.x += Math.Sign(to.x - current.x);
+            else current.y += Math.Sign(to.y - current.y);
             AddPathPosition(safePath, added, current);
         }
     }
 
-    private void AddPathPosition(List<Vector2Int> safePath, HashSet<Vector2Int> added, Vector2Int position)
+    private void AddPathPosition(List<Vector2Int> safePath, HashSet<Vector2Int> added, Vector2Int pos)
     {
-        if (added.Add(position))
-        {
-            safePath.Add(position);
-        }
+        if (added.Add(pos)) safePath.Add(pos);
     }
 
     private void MarkStartGoalAndProtectedPath(MineMapData mapData)
     {
-        for (int i = 0; i < mapData.safePath.Count; i++)
-        {
-            Vector2Int position = mapData.safePath[i];
-            TileData tile = mapData.tiles[position.x, position.y];
-            tile.isProtected = true;
-            tile.isMine = false;
-        }
-
-        TileData startTile = mapData.GetTile(mapData.start);
-        startTile.isStart = true;
-        startTile.isProtected = true;
-
-        TileData goalTile = mapData.GetTile(mapData.goal);
-        goalTile.isGoal = true;
-        goalTile.isProtected = true;
+        foreach (var p in mapData.safePath) { var t = mapData.tiles[p.x, p.y]; t.isProtected = true; t.isMine = false; }
+        mapData.GetTile(mapData.start).isStart = true;
+        mapData.GetTile(mapData.start).isProtected = true;
+        mapData.GetTile(mapData.goal).isGoal = true;
+        mapData.GetTile(mapData.goal).isProtected = true;
     }
 
     private void PlaceMines(MineMapData mapData)
@@ -348,22 +249,10 @@ public class MineMapGenerator : MonoBehaviour
             {
                 TileData tile = mapData.tiles[x, y];
                 tile.risk = CalculateProgressRisk(tile.position, mapData.start, mapData.goal);
-
-                if (tile.isProtected)
-                {
-                    continue;
-                }
-
-                float mineChance = Mathf.Lerp(startMineChance, goalMineChance, tile.risk);
-                mineChance += Random.Range(-mineChanceNoise, mineChanceNoise);
-                mineChance += Mathf.Max(0, mapData.floorIndex) * mineChancePerFloor;
-                mineChance = Mathf.Clamp01(mineChance);
-
+                if (tile.isProtected) continue;
+                float mineChance = Mathf.Clamp01(Mathf.Lerp(startMineChance, goalMineChance, tile.risk) + Random.Range(-mineChanceNoise, mineChanceNoise) + (Mathf.Max(0, mapData.floorIndex) * mineChancePerFloor));
                 tile.isMine = Random.value < mineChance;
-                if (tile.isMine)
-                {
-                    tile.tileCoin = Random.Range(6 * minCoinAmount, 6 * maxCoinAmount + 1);
-                }
+                if (tile.isMine) tile.tileCoin = Random.Range(6 * minCoinAmount, 6 * maxCoinAmount + 1);
             }
         }
     }
@@ -375,105 +264,36 @@ public class MineMapGenerator : MonoBehaviour
             for (int y = 0; y < mapData.height; y++)
             {
                 TileData tile = mapData.tiles[x, y];
-
-                if (tile.isMine || (!allowRewardsOnSafePath && tile.isProtected))
-                {
-                    continue;
-                }
-
-                float coinChance = Mathf.Lerp(startCoinChance, goalCoinChance, tile.risk);
-
-                if (Random.value < coinChance)
-                {
-                    tile.tileCoin = Random.Range(minCoinAmount, maxCoinAmount + 1);
-                }
-
-                float itemChance = Mathf.Lerp(startItemChance, goalItemChance, tile.risk);
-
-                if (Random.value < itemChance)
-                {
-                    tile.hasItem = true;
-                    //tile.itemId = itemIds != null && itemIds.Length > 0
-                    //    ? itemIds[Random.Range(0, itemIds.Length)]
-                    //    : "DefaultItem";
-                }
+                if (tile.isMine || (!allowRewardsOnSafePath && tile.isProtected)) continue;
+                if (Random.value < Mathf.Lerp(startCoinChance, goalCoinChance, tile.risk)) tile.tileCoin = Random.Range(minCoinAmount, maxCoinAmount + 1);
+                if (Random.value < Mathf.Lerp(startItemChance, goalItemChance, tile.risk)) tile.hasItem = true;
             }
         }
     }
 
-    private float CalculateProgressRisk(Vector2Int position, Vector2Int start, Vector2Int goal)
+    private float CalculateProgressRisk(Vector2Int p, Vector2Int s, Vector2Int g)
     {
-        Vector2 startPoint = new Vector2(start.x, start.y);
-        Vector2 goalPoint = new Vector2(goal.x, goal.y);
-        Vector2 positionPoint = new Vector2(position.x, position.y);
-        Vector2 startToGoal = goalPoint - startPoint;
-        float lengthSquared = Vector2.Dot(startToGoal, startToGoal);
-
-        if (lengthSquared <= Mathf.Epsilon)
-        {
-            return 0f;
-        }
-
-        float progress = Vector2.Dot(positionPoint - startPoint, startToGoal) / lengthSquared;
-        return Mathf.Clamp01(progress);
+        Vector2 start = new Vector2(s.x, s.y), goal = new Vector2(g.x, g.y), pos = new Vector2(p.x, p.y);
+        Vector2 stg = goal - start;
+        float lenSq = Vector2.Dot(stg, stg);
+        return lenSq <= Mathf.Epsilon ? 0f : Mathf.Clamp01(Vector2.Dot(pos - start, stg) / lenSq);
     }
 
-    private Vector2Int ClampToPlayableArea(Vector2Int position)
+    private Vector2Int ClampToPlayableArea(Vector2Int p) => new Vector2Int(Mathf.Clamp(p.x, PlayableMinX, PlayableMaxX), Mathf.Clamp(p.y, PlayableMinY, PlayableMaxY));
+    private Vector2Int RandomPoint(int minX, int maxX, int minY, int maxY) => new Vector2Int(Random.Range(minX, maxX + 1), Random.Range(minY, maxY + 1));
+    private Vector2Int FarthestPlayablePointFrom(Vector2Int s)
     {
-        return new Vector2Int(
-            Mathf.Clamp(position.x, PlayableMinX, PlayableMaxX),
-            Mathf.Clamp(position.y, PlayableMinY, PlayableMaxY));
-    }
-
-    private Vector2Int RandomPoint(int minX, int maxX, int minY, int maxY)
-    {
-        minX = Mathf.Clamp(minX, PlayableMinX, PlayableMaxX);
-        maxX = Mathf.Clamp(maxX, minX, PlayableMaxX);
-        minY = Mathf.Clamp(minY, PlayableMinY, PlayableMaxY);
-        maxY = Mathf.Clamp(maxY, minY, PlayableMaxY);
-
-        return new Vector2Int(Random.Range(minX, maxX + 1), Random.Range(minY, maxY + 1));
-    }
-
-    private Vector2Int FarthestPlayablePointFrom(Vector2Int start)
-    {
-        Vector2Int farthest = start;
-        int farthestDistance = -1;
-
+        Vector2Int farthest = s; int dist = -1;
         for (int x = PlayableMinX; x <= PlayableMaxX; x++)
-        {
             for (int y = PlayableMinY; y <= PlayableMaxY; y++)
             {
-                Vector2Int candidate = new Vector2Int(x, y);
-                int distance = ManhattanDistance(start, candidate);
-
-                if (distance > farthestDistance)
-                {
-                    farthest = candidate;
-                    farthestDistance = distance;
-                }
+                int d = ManhattanDistance(s, new Vector2Int(x, y));
+                if (d > dist) { farthest = new Vector2Int(x, y); dist = d; }
             }
-        }
-
         return farthest;
     }
-
-    private int ManhattanDistance(Vector2Int a, Vector2Int b)
-    {
-        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
-    }
-
-    private int EffectiveMinStartGoalDistance
-    {
-        get
-        {
-            int maxPossibleDistance = Mathf.Max(1, (PlayableMaxX - PlayableMinX) + (PlayableMaxY - PlayableMinY));
-            return Mathf.Min(minStartGoalDistance, maxPossibleDistance);
-        }
-    }
-
-
-
+    private int ManhattanDistance(Vector2Int a, Vector2Int b) => Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
+    private int EffectiveMinStartGoalDistance => minStartGoalDistance;
     private int PlayableMinX => Mathf.Clamp(margin, 0, width - 1);
     private int PlayableMaxX => Mathf.Clamp(width - 1 - margin, PlayableMinX, width - 1);
     private int PlayableMinY => Mathf.Clamp(margin, 0, height - 1);

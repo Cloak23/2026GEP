@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 
 public class MineMapRenderer : MonoBehaviour
@@ -55,6 +56,34 @@ public class MineMapRenderer : MonoBehaviour
         }
     }
 
+
+    private void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
+    private void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "MainGame")
+        {
+            // 1. Grid 하위에 있는 RoomTilemap을 직접 찾습니다.
+            Transform grid = GameObject.Find("Grid")?.transform;
+            if (grid != null)
+            {
+                // 스크린샷에 나온 이름이 "RoomTilemap"입니다.
+                wallTilemap = grid.Find("RoomTilemap")?.GetComponent<Tilemap>();
+                overlayTilemap = grid.Find("OverlayTilemap")?.GetComponent<Tilemap>();
+                debugTilemap = grid.Find("DebugTilemap")?.GetComponent<Tilemap>();
+
+                if (wallTilemap != null)
+                {
+                    Debug.Log("[MineMapRenderer] RoomTilemap 연결 성공!");
+
+                    Invoke(nameof(GenerateAndRender), 0.1f);
+                }
+            }
+        }
+    }
+
+
     private void Start()
     {
         if (renderOnStart)
@@ -66,6 +95,13 @@ public class MineMapRenderer : MonoBehaviour
     [ContextMenu("Generate And Render Map")]
     public void GenerateAndRender()
     {
+        if (wallTilemap == null)
+        {
+            GameObject wallObj = GameObject.Find("Wall");
+            if (wallObj != null) wallTilemap = wallObj.GetComponent<Tilemap>();
+        }
+
+
         if (!ValidateReferences(true))
         {
             return;
@@ -148,8 +184,9 @@ public class MineMapRenderer : MonoBehaviour
         {
             for (int i = coverContainer.childCount - 1; i >= 0; i--)
             {
-                if (Application.isPlaying) Destroy(coverContainer.GetChild(i).gameObject);
-                else DestroyImmediate(coverContainer.GetChild(i).gameObject);
+                /*if (Application.isPlaying) Destroy(coverContainer.GetChild(i).gameObject);
+                else DestroyImmediate(coverContainer.GetChild(i).gameObject);*/
+                DestroyImmediate(coverContainer.GetChild(i).gameObject);
             }
         }
 
