@@ -63,6 +63,6 @@ public class GoalManager : MonoBehaviour
         m_game.e_game_over.Invoke();
         data.PlayerLife += 1;
         SceneManager.UnloadSceneAsync("Goal");
-        SceneManager.LoadScene("Item");
+        SceneManager.LoadScene("GameOver");
     }
 }

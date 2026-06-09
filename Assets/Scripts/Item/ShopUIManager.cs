@@ -67,7 +67,7 @@ public class ShopUIManager : MonoBehaviour
     {
         if (lifetext != null)
         {
-            lifetext.text = "LIFE : " + DataManager.Instance.PlayerLife.ToString();
+            lifetext.text = ": " + DataManager.Instance.PlayerLife.ToString();
         }
 
         RefreshItemUI(revival);
