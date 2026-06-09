@@ -60,55 +60,6 @@ public class RouletteView : MonoBehaviour
         Debug.Log("Arrange Fin : " + rouletteSlots.Count);
     }
 
-    /*public void ClickSpinButton()
-    {
-        ArrangeRoulette();
-        Debug.Log("Click : " + rouletteSlots.Count);
-        if (!isSpinning && rouletteSlots.Count > 0)
-        {
-            int finalWinningIndex = Random.Range(0, rouletteSlots.Count);
-
-            StartCoroutine(SpinRoulette(finalWinningIndex));
-        }
-    }
-
-    private IEnumerator SpinRoulette(int targetIndex)
-    {
-        isSpinning = true;
-
-        // 최소 바퀴
-        int minLaps = Random.Range(2, 5);
-        int totalSteps = (rouletteSlots.Count * minLaps) + targetIndex + 1;
-
-        int currentStep = 0;
-        float currentDelay = initialDelay;
-
-        while (currentStep < totalSteps)
-        {
-            int activeSlotIndex = currentStep % rouletteSlots.Count;
-            Debug.Log(currentStep);
-
-            if (highlightCursor != null && rouletteSlots[activeSlotIndex] != null)
-            {
-                highlightCursor.transform.position = rouletteSlots[activeSlotIndex].transform.position;
-            }
-
-            int remainingSteps = totalSteps - currentStep;
-            if (remainingSteps <= 15)
-            {
-                float progress = (15f - remainingSteps) / 15f;
-                currentDelay = Mathf.Lerp(initialDelay, maxDelay, progress);
-            }
-
-            currentStep++;
-            yield return new WaitForSeconds(currentDelay);
-        }
-
-        isSpinning = false;
-        OnRouletteFinished(targetIndex);
-    }*/
-
-
     public void ClickSpinButton()
     {
 

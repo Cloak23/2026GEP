@@ -38,6 +38,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ClearStageIndex()
+    {
+        stage_index = 0;
+    }
+
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -52,38 +57,22 @@ public class GameManager : MonoBehaviour
     {
         if (scene.name == "MainGame")
         {
-            Debug.Log("[GameManager] 씬 로드 감지: 참조 재연결 시작");
-
-            // 1. 현재 씬에 있는 새로운 제너레이터를 찾아서 연결
             m_Generator = FindObjectOfType<MineMapGenerator>();
             m_Renderer = MineMapRenderer.Instance;
 
-            // 2. 이제 맵 생성 시작
             StageStart();
         }
     }
 
-    private IEnumerator DelayedStageStart()
-    {
-        // 이 짧은 시간 동안 유니티는 씬의 모든 오브젝트(Tilemap 포함)를 확실하게 초기화합니다.
-        yield return null;
-
-        m_Generator = FindObjectOfType<MineMapGenerator>();
-        m_Renderer = MineMapRenderer.Instance;
-
-        StageStart();
-    }
-
     private void Start()
     {
-        Debug.Log("Start 실행됨!");
         Invoke("InitializeGame", 0.1f);
+        e_game_over.AddListener(ClearStageIndex);
     }
 
     private void InitializeGame()
     {
         string currentScene = SceneManager.GetActiveScene().name;
-        Debug.Log("[GameManager] 현재 씬 확인: " + currentScene);
 
         if (currentScene == "MainGame")
         {
@@ -92,40 +81,29 @@ public class GameManager : MonoBehaviour
 
             if (m_Generator != null)
             {
-                Debug.Log("[GameManager] MainGame 씬 감지! 맵 생성을 시작합니다.");
                 StageStart();
-            }
-            else
-            {
-                Debug.LogError("[GameManager] MainGame인데 제너레이터를 못 찾았습니다.");
             }
         }
     }
 
     public void EndStage()
     {
+        stage_index++;
         e_stage_end.Invoke();
         SceneManager.LoadSceneAsync("Goal", LoadSceneMode.Additive);
     }
 
     public void StageStart()
     {
-        Debug.Log("[GameManager] StageStart 실행됨"); // 이게 찍히는지 확인
-        // 생성기가 연결되어 있는지 확인 후 실행
         if (m_Generator != null)
         {
             m_Generator.width = 16;
             m_Generator.height = 16;
-            m_Generator.floorIndex = stage_index++;
+            m_Generator.floorIndex = stage_index;
+            m_Generator.ClearLastGeneratedMap();
             m_Renderer.GenerateAndRender();
             StartCoroutine(GeneratorWait());
         }
-
-        else
-        {
-            Debug.LogError("[GameManager] m_Generator가 null입니다!"); // 이게 찍히면 범인 확정
-        }
-
     }
 
     IEnumerator GeneratorWait()
@@ -133,7 +111,7 @@ public class GameManager : MonoBehaviour
         while (true)
         {
             yield return null;
-            if (m_Generator != null && m_Generator.LastGeneratedMap.floorIndex == stage_index - 1)
+            if (m_Generator != null && m_Generator.LastGeneratedMap != null)
             {
                 e_stage_start?.Invoke();
                 yield break;

@@ -60,7 +60,6 @@ public class GoalManager : MonoBehaviour
 
     void Fail()
     {
-        m_game.e_game_over.Invoke();
         data.PlayerLife += 1;
         SceneManager.UnloadSceneAsync("Goal");
         SceneManager.LoadScene("GameOver");

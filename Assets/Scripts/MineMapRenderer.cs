@@ -48,7 +48,6 @@ public class MineMapRenderer : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {

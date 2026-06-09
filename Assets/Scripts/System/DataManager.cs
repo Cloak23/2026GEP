@@ -87,7 +87,6 @@ public class DataManager : MonoBehaviour
     public void AddLife(int amount)
     {
         player_life += amount;
-        Debug.Log("사망! 현재 누적 라이프: " + player_life);
     }
 
 
@@ -121,7 +120,6 @@ public class DataManager : MonoBehaviour
         m_Renderer = MineMapRenderer.Instance;
         game_manager = GameManager.Instance;
         game_manager.e_stage_start.AddListener(InitStage);
-        player_gold = PLAYER_INIT_GOLD;
     }
 
     public void InitStage()
@@ -133,12 +131,13 @@ public class DataManager : MonoBehaviour
             current_revival_count = level_revival;
             current_roulette_bonus_count = level_roulette_bonus;
             current_AIrequest_count = level_AIrequest;
-
-            Debug.Log($"[InitStage] 레벨 데이터 전달 완료: {level_revival}");
         }
 
         PlayerPos = map.start;
-        PlayerGold = PLAYER_INIT_GOLD;
+        if(game_manager.stage_index == 0)
+        {
+            PlayerGold = PLAYER_INIT_GOLD;
+        }
     }
 
     public void Move(Vector2Int dir)
@@ -169,7 +168,7 @@ public class DataManager : MonoBehaviour
         {
             currentTime += Time.deltaTime;
 
-            // 현재 경과 시간을 전체 시간으로 나누어 0~1 사이의 비율(t)을 만듭니다.
+            // 현재 경과 시간을 전체 시간으로 나누어 0~1 사이의 비율(t)을 만듬
             float t = currentTime / duration;
 
             transform.position = Vector3.Lerp(old_pos, new_pos, t);
@@ -182,17 +181,14 @@ public class DataManager : MonoBehaviour
 
     private void GameOver()
     {
-        Debug.Log($"[GameOver] 체크! 남은 부활 횟수: {current_revival_count}");
 
         if (current_revival_count > 0)
         {
-            current_revival_count--; // 이번 판의 기회만 차감
-            PlayerGold = 10;         // 부활!
-            Debug.Log($"부활 성공! 남은 기회: {current_revival_count}");
+            current_revival_count--;
+            PlayerGold = 10;
             return;
         }
 
-        Debug.Log("게임 오버!");
         AddLife(1);
         SceneManager.LoadScene("GameOver");
     }

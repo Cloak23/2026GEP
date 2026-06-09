@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -61,6 +61,11 @@ public class MineMapGenerator : MonoBehaviour
         new Vector2Int(-1, 0), new Vector2Int(1, 0), new Vector2Int(-1, 1),
         new Vector2Int(0, 1), new Vector2Int(1, 1)
     };
+
+    public void ClearLastGeneratedMap()
+    {
+        LastGeneratedMap = null;
+    }
 
     private void Awake()
     {
