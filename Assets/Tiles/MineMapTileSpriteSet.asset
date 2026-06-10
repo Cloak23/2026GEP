@@ -47,8 +47,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2a3ad3cc862682044a844d0c426efef7, type: 2}
   - {fileID: 11400000, guid: 8e9f1f09a70db1e4d9ab03c545aff1a9, type: 2}
   - {fileID: 11400000, guid: 3f7def4a593d07e46bcb4412dd51c8e6, type: 2}
-  coinTile: {fileID: 11400000, guid: 755b964f426e8494aa8a7d386a2b3874, type: 2}
+  coinTile: {fileID: 0}
   coinAmountTiles: []
-  defaultItemTile: {fileID: 11400000, guid: 531127d1ca4a76a47b44d3064442c146, type: 2}
+  defaultItemTile: {fileID: 0}
   itemTiles: []
-  missingTile: {fileID: 11400000, guid: c07952388af649e4dadaf01d0c381e7c, type: 2}
+  missingTile: {fileID: 0}

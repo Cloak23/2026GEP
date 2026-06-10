@@ -68,6 +68,7 @@ public class GameManager : MonoBehaviour
     {
         Invoke("InitializeGame", 0.1f);
         e_game_over.AddListener(ClearStageIndex);
+        e_stage_start.AddListener(ResetPlayerFlags);
     }
 
     private void InitializeGame()
@@ -104,6 +105,7 @@ public class GameManager : MonoBehaviour
             m_Renderer.GenerateAndRender();
             StartCoroutine(GeneratorWait());
         }
+
     }
 
     IEnumerator GeneratorWait()
@@ -120,7 +122,14 @@ public class GameManager : MonoBehaviour
     }
 
 
-
+    private void ResetPlayerFlags()
+    {
+        Move playerMove = FindObjectOfType<Move>();
+        if (playerMove != null)
+        {
+            playerMove.ClearAllFlags();
+        }
+    }
 
 
 

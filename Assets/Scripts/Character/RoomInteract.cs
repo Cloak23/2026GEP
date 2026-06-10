@@ -31,13 +31,18 @@ public class RoomInteract : MonoBehaviour
 
     private void Update()
     {
+        if (data == null) data = DataManager.Instance;
+        if (game_manager == null) game_manager = GameManager.Instance;
+
+
         if (Input.GetKeyDown(KeyCode.E))
         {
+            Debug.Log("E키가 입력되었습니다!");
             InteractRoom();
         }
     }
 
-    private void InteractRoom()
+    /*private void InteractRoom()
     {
         if(data.PlayerPos == null) return;
 
@@ -61,5 +66,24 @@ public class RoomInteract : MonoBehaviour
         //    data.PlayerGold += tile_data.tileCoin;
         //}
         
+    }*/
+
+    private void InteractRoom()
+    {
+        if (data == null) data = DataManager.Instance;
+
+        TileData tile_data = data.map.GetTile(data.PlayerPos);
+
+        if (tile_data == null)
+        {
+            return;
+        }
+
+        if (tile_data.isGoal)
+        {
+            game_manager.EndStage();
+        }
+
     }
+
 }

@@ -229,9 +229,22 @@ public class Move : MonoBehaviour
             }
         }
 
+
+
+
     }
 
+    public void ClearAllFlags()
+    {
+        // 1. 딕셔너리에 있는 모든 깃발 오브젝트 삭제
+        foreach (var flagObj in spawnedflag.Values)
+        {
+            if (flagObj != null) Destroy(flagObj);
+        }
 
-
+        // 2. 딕셔너리 비우기
+        spawnedflag.Clear();
+        Debug.Log("모든 깃발이 삭제되었습니다.");
+    }
 
 }

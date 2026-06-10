@@ -75,7 +75,9 @@ public class DataManager : MonoBehaviour
         }
     }
 
-    private int player_life = 0;
+    [Header("테스트용 재화 설정")]
+    public int player_life;
+    //private int player_life = 0;
     public int PlayerLife 
     {
         get => player_life;
