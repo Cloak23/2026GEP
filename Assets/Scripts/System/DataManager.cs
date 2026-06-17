@@ -46,6 +46,7 @@ public class DataManager : MonoBehaviour
     private MineMapRenderer m_Renderer;
     private GameManager game_manager;
 
+    public AudioClip revivalSound;
     public MineMapData map
     {
         get => m_Renderer.CurrentMap;
@@ -190,6 +191,7 @@ public class DataManager : MonoBehaviour
             current_revival_count--;
             PlayerGold = 10;
             e_revival?.Invoke();
+            BGMManager.Instance.PlaySFX(revivalSound);
             return;
         }
 

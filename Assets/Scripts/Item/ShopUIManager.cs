@@ -27,6 +27,8 @@ public class ShopUIManager : MonoBehaviour
     public Items opentile;
     public Items AIrequest;
 
+    public AudioClip levelUpSound;
+
     private void Start() {
 
         revival.currentlevel = DataManager.Instance.level_revival;
@@ -55,6 +57,11 @@ public class ShopUIManager : MonoBehaviour
             DataManager.Instance.PlayerLife -= cost; // 차감
             item.currentlevel++;
 
+            if (BGMManager.Instance != null && levelUpSound != null)
+            {
+                BGMManager.Instance.PlaySFX(levelUpSound);
+            }
+             
             if (item == revival) DataManager.Instance.level_revival = item.currentlevel;
             else if (item == opentile) DataManager.Instance.level_roulette_bonus = item.currentlevel;
             else if (item == AIrequest) DataManager.Instance.level_AIrequest = item.currentlevel;

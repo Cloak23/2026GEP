@@ -20,6 +20,10 @@ public class GoldUIUpdate : MonoBehaviour
     public Sprite roulette_sprite;
     public Vector3Int offset = new Vector3Int(1, 1, 0);
 
+    public AudioClip coinGainSound;
+    public AudioClip coinLoseSound;
+
+    public GameObject explosion_effect_prefab;
     void Start()
     {
         data = DataManager.Instance;
@@ -38,11 +42,26 @@ public class GoldUIUpdate : MonoBehaviour
 
     IEnumerator Gold_Earn_Effect(int old_gold, int new_gold)
     {
+        if (new_gold > old_gold)
+        {
+            BGMManager.Instance.PlaySFX(coinGainSound);
+        }
+
         GameObject tmp_obj = Instantiate(gold_effect_prefab, MineMapRenderer.Instance.ToRoomCell(data.PlayerPos) + offset, Quaternion.identity);
         tmp_obj.GetComponentInChildren<TextMeshProUGUI>().text = new_gold - old_gold > 0 ? "+ " + (new_gold - old_gold).ToString() + " G" : (new_gold - old_gold).ToString() + " G";
         if (data.map.GetTile(data.PlayerPos).isMine)
         {
+            BGMManager.Instance.PlaySFX(coinLoseSound);
             tmp_obj.GetComponentInChildren<Image>().sprite = mine_sprite;
+
+            if (explosion_effect_prefab != null)
+            {
+                GameObject canvas = GameObject.Find("Canvas");
+                GameObject explosion = Instantiate(explosion_effect_prefab, canvas.transform);
+
+                Destroy(explosion, 1.5f);
+            }
+
         }
         else if (data.map.GetTile(data.PlayerPos).hasItem)
         {
@@ -51,4 +70,5 @@ public class GoldUIUpdate : MonoBehaviour
         yield return new WaitForSeconds(1f);
         Destroy(tmp_obj);
     }
+
 }

@@ -69,6 +69,15 @@ public class GameManager : MonoBehaviour
         Invoke("InitializeGame", 0.1f);
         e_game_over.AddListener(ClearStageIndex);
         e_stage_start.AddListener(ResetPlayerFlags);
+
+        DataManager.Instance.e_roulette_start.AddListener(() => {
+            if (BGMManager.Instance != null) BGMManager.Instance.MuteBGM(true);
+        });
+
+        DataManager.Instance.e_roulette_end.AddListener(() => {
+            if (BGMManager.Instance != null) BGMManager.Instance.MuteBGM(false);
+        });
+
     }
 
     private void InitializeGame()
