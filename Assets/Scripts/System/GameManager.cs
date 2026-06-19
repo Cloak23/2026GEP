@@ -42,6 +42,12 @@ public class GameManager : MonoBehaviour
     {
         stage_index = 0;
     }
+    public void Update()
+    {
+        //Debug.Log("stageindex : " + stage_index);
+        //Debug.Log("map data index : " + m_Renderer.CurrentMap.floorIndex);
+    }
+
 
     private void OnEnable()
     {
@@ -110,7 +116,7 @@ public class GameManager : MonoBehaviour
             m_Generator.width = 16;
             m_Generator.height = 16;
             m_Generator.floorIndex = stage_index;
-            m_Generator.ClearLastGeneratedMap();
+            //m_Generator.ClearLastGeneratedMap();
             m_Renderer.GenerateAndRender();
             StartCoroutine(GeneratorWait());
         }

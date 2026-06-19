@@ -28,6 +28,7 @@ public class Move : MonoBehaviour
     private UnityAction<Vector2Int, Vector2Int> move_action;
     private MineMapRenderer m_Renderer;
     private GameManager game_manager;
+    private Animator animator;
 
     private Dictionary<Vector2Int, GameObject> spawnedflag = new Dictionary<Vector2Int, GameObject>();
 
@@ -36,6 +37,7 @@ public class Move : MonoBehaviour
         data = DataManager.Instance;
         m_Renderer = MineMapRenderer.Instance;
         game_manager = GameManager.Instance;
+        animator = GetComponent<Animator>();
         move_action = (a, b) => { StartCoroutine(MoveAnimation(a, b)); };
         data.e_pos_change.AddListener(move_action);
         data.e_roulette_start.AddListener(() => { isRouletteActive = true; });
@@ -159,6 +161,8 @@ public class Move : MonoBehaviour
             playerCollider.enabled = true;
         }
 
+        animator.SetInteger("Horizontal", 0);
+        animator.SetInteger("Vertical", 0);
 
         move_lock = false;
     }

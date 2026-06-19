@@ -29,6 +29,8 @@ public class TileRevealByTouch : MonoBehaviour
         {
             coverSquare.SetActive(true);
         }
+        GameManager.Instance.e_game_over.AddListener(() => { Destroy(gameObject); });
+        GameManager.Instance.e_stage_end.AddListener(() => { Destroy(gameObject); });
 
         // 타일이 생성되고 딱 0.1초 뒤에 실행
         Invoke("EnableTouch", 0.1f);
