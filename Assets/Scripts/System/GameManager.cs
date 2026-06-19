@@ -116,8 +116,10 @@ public class GameManager : MonoBehaviour
             m_Generator.width = 16;
             m_Generator.height = 16;
             m_Generator.floorIndex = stage_index;
+
             //m_Generator.ClearLastGeneratedMap();
             m_Renderer.GenerateAndRender();
+
             StartCoroutine(GeneratorWait());
         }
 
@@ -128,7 +130,7 @@ public class GameManager : MonoBehaviour
         while (true)
         {
             yield return null;
-            if (m_Generator != null && m_Generator.LastGeneratedMap != null)
+            if (m_Renderer != null && m_Renderer.CurrentMap != null)
             {
                 e_stage_start?.Invoke();
                 yield break;

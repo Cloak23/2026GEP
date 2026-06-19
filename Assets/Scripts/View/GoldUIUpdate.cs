@@ -37,7 +37,7 @@ public class GoldUIUpdate : MonoBehaviour
 
     void UpdateGoldUI(int old_gold, int new_gold)
     {
-        gold_text.text = "Gold : " + data.PlayerGold;
+        gold_text.text = "" + data.PlayerGold;
     }
 
     IEnumerator Gold_Earn_Effect(int old_gold, int new_gold)

@@ -49,10 +49,10 @@ public class DataManager : MonoBehaviour
     public AudioClip revivalSound;
     public MineMapData map
     {
-        get => m_Renderer.CurrentMap;
-        private set
+        get
         {
-            map = value;
+            if (m_Renderer == null) m_Renderer = MineMapRenderer.Instance;
+            return m_Renderer != null ? m_Renderer.CurrentMap : null;
         }
     }
 
@@ -123,7 +123,25 @@ public class DataManager : MonoBehaviour
     {
         m_Renderer = MineMapRenderer.Instance;
         game_manager = GameManager.Instance;
-        game_manager.e_stage_start.AddListener(InitStage);
+        game_manager.e_stage_start.AddListener(InitStage); 
+        
+        SceneManager.sceneLoaded += OnSceneLoadedRefresh;
+    }
+    private void OnSceneLoadedRefresh(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "MainGame")
+        {
+            m_Renderer = MineMapRenderer.Instance;
+            game_manager = GameManager.Instance;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (game_manager != null)
+            game_manager.e_stage_start.RemoveListener(InitStage);
+
+        SceneManager.sceneLoaded -= OnSceneLoadedRefresh;
     }
 
     public void InitStage()

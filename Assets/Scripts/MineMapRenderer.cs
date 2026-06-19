@@ -76,7 +76,7 @@ public class MineMapRenderer : MonoBehaviour
                 {
                     Debug.Log("[MineMapRenderer] RoomTilemap 연결 성공!");
 
-                    Invoke(nameof(GenerateAndRender), 0.1f);
+                    //Invoke(nameof(GenerateAndRender), 0.1f);
                 }
             }
         }
