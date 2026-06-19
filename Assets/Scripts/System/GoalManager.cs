@@ -17,6 +17,9 @@ public class GoalManager : MonoBehaviour
     private int require_gold;
     private int idx;
 
+    public AudioClip SuccessSound;
+    public AudioClip FailSound;
+
     private void Start()
     {
         data = DataManager.Instance;
@@ -40,12 +43,14 @@ public class GoalManager : MonoBehaviour
             result_text.text = "할당량 무사히 통과";
             now_gold_text.color = Color.green;
             next_button.onClick.AddListener(Pass);
+            BGMManager.Instance.PlaySFX(SuccessSound);
         }
         else
         {
             result_text.text = "할당량 통과 실패";
             now_gold_text.color = Color.red;
             next_button.onClick.AddListener(Fail);
+            BGMManager.Instance.PlaySFX(FailSound);
         }
     }
 

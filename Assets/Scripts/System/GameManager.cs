@@ -73,6 +73,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Invoke("InitializeGame", 0.1f);
+        BGMManager.Instance.MuteBGM(false);
         e_game_over.AddListener(ClearStageIndex);
         e_stage_start.AddListener(ResetPlayerFlags);
 
@@ -106,6 +107,7 @@ public class GameManager : MonoBehaviour
     {
         stage_index++;
         e_stage_end.Invoke();
+        BGMManager.Instance.MuteBGM(true);
         SceneManager.LoadSceneAsync("Goal", LoadSceneMode.Additive);
     }
 

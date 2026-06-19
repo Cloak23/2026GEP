@@ -131,6 +131,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 25709249}
+  - component: {fileID: 25709250}
   - component: {fileID: 25709248}
   m_Layer: 0
   m_Name: BGMManager
@@ -250,6 +251,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &25709250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 25709247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 678388d602bc90644b15b0ad65996997, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bgmSource: {fileID: 0}
+  sfxSource: {fileID: 25709248}
 --- !u!1 &304440122
 GameObject:
   m_ObjectHideFlags: 0
@@ -646,6 +661,8 @@ MonoBehaviour:
   now_gold_text: {fileID: 1947486653}
   require_gold_text: {fileID: 1374516570}
   result_text: {fileID: 629908238}
+  SuccessSound: {fileID: 8300000, guid: 5ac6fc4003415436bb278aafd51b6878, type: 3}
+  FailSound: {fileID: 8300000, guid: 8aa3c8d2cab77ae449b066e50bfe5496, type: 3}
 --- !u!4 &679879239
 Transform:
   m_ObjectHideFlags: 0
